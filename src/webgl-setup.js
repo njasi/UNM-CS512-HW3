@@ -35,17 +35,23 @@ let fragEditor = document.getElementById("fragEditor");
 // fragEditor.value = document.getElementById("fragment-shader").textContent;
 
 let program, posLoc, colorLoc, timeLoc, uMVM, uPM, uMTM;
+
+// vertex buffer, colors buffer, indices buffer.
 let vbo, nbo, ibo;
+
+// generate a primitive
+const {vertices, indices, vertexCount } = generateGrid(30, 5);
+const fillerColors = generateFillerColors(vertexCount);
 
 // Buffers
 function initBuffers() {
   vbo = gl.createBuffer();
   gl.bindBuffer(gl.ARRAY_BUFFER, vbo);
-  gl.bufferData(gl.ARRAY_BUFFER, positions, gl.STATIC_DRAW);
+  gl.bufferData(gl.ARRAY_BUFFER, vertices, gl.STATIC_DRAW);
 
   nbo = gl.createBuffer();
   gl.bindBuffer(gl.ARRAY_BUFFER, nbo);
-  gl.bufferData(gl.ARRAY_BUFFER, colors, gl.STATIC_DRAW);
+  gl.bufferData(gl.ARRAY_BUFFER, fillerColors, gl.STATIC_DRAW);
 
   ibo = gl.createBuffer();
   gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, ibo);
