@@ -1,0 +1,54 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>UNM CS 512 HW3</title>
+    <!-- load styles from the main site if we online -->
+    <link href="/styles.css" rel="stylesheet" />
+
+    <script defer src="./src/primitives.js"></script>
+    <script defer src="./src/transformations.js"></script>
+    <script defer src="./src/webgl-setup.js"></script>
+
+    <!-- NOTE: shaders are loaded from files now in webgl-setup.js-->
+    <!-- <script
+      id="vertex-shader"
+      src="./src/shaders/vertex-shader.vert"
+      type="x-shader/x-vertex"
+    ></script>
+    <script
+      src="./src/shaders/fragment.frag"
+      id="fragment-shader"
+      type="x-shader/x-fragment"
+    ></script> -->
+  </head>
+
+  <body>
+    <main>
+      <h2>Interactive Controls & Geometric Primitives</h2>
+      <p>
+        Edit vertex and fragment shaders on the left to get the result
+        instantly.<br />
+        Use mouse to drag and rotate the cube. <br />
+        Use arrow keys and w, s keys to move the camera.<br />
+        Press F12 to see the console for debugging.
+      </p>
+
+      <div style="display: flex; gap: 10px; align-items: flex-start">
+        <div style="display: flex; flex-direction: column; gap: 10px">
+          <div>
+            <b>Vertex Shader</b><br />
+            <textarea id="vertEditor"></textarea>
+          </div>
+          <div>
+            <b>Fragment Shader</b><br />
+            <textarea id="fragEditor"></textarea>
+          </div>
+        </div>
+        <div>
+          <canvas id="glcanvas" width="400" height="400"></canvas>
+        </div>
+      </div>
+    </main>
+  </body>
+</html>
