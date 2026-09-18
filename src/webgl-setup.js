@@ -37,31 +37,34 @@ let fragEditor = document.getElementById("fragEditor");
 let program, posLoc, colorLoc, timeLoc, uMVM, uPM, uMTM;
 
 // vertex buffer, colors buffer, indices buffer.
-let vbo, nbo, ibo;
+// let vbo, nbo, ibo;
 
-// generate a primitive
-const {vertices, indices, vertexCount } = generateGrid(30, 5);
-const fillerColors = generateFillerColors(vertexCount);
+const sceneObjects = [];
+
+function addWater() {
+  // // generate a primitive
+
+  const { vertices, indices, vertexCount } = generateGrid(30, 5);
+  const fillerColors = generateFillerColors(vertexCount, [0, 0, 1]);
+
+  let water = new SceneObject("water", vertices, fillerColors, indices);
+
+  sceneObjects.push(water);
+}
+
+addWater();
 
 // Buffers
 function initBuffers() {
-  vbo = gl.createBuffer();
-  gl.bindBuffer(gl.ARRAY_BUFFER, vbo);
-  gl.bufferData(gl.ARRAY_BUFFER, vertices, gl.STATIC_DRAW);
-
-  nbo = gl.createBuffer();
-  gl.bindBuffer(gl.ARRAY_BUFFER, nbo);
-  gl.bufferData(gl.ARRAY_BUFFER, fillerColors, gl.STATIC_DRAW);
-
-  ibo = gl.createBuffer();
-  gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, ibo);
-  gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, indices, gl.STATIC_DRAW);
+  sceneObjects.forEach((obj) => {
+    obj.loadBuffers(gl);
+  });
 }
 
 /**
  * Load a shader from a remote source (file)
  * @param {*} url shader url to load from
- * @returns 
+ * @returns
  */
 async function loadShader(url) {
   const response = await fetch(url);
@@ -78,15 +81,15 @@ async function loadShader(url) {
 /**
  * Load our shaders and setup
  */
-async function loadShaders(){
-    const [vertexSource, fragmentSource] = await Promise.all([
-      loadShader("./src/shaders/vertex.vert"),
-      loadShader("./src/shaders/fragment.frag"),
-    ]);
+async function loadShaders() {
+  const [vertexSource, fragmentSource] = await Promise.all([
+    loadShader("./src/shaders/vertex.vert"),
+    loadShader("./src/shaders/fragment.frag"),
+  ]);
 
-    // Put the loaded source into the editors
-    vertEditor.value = vertexSource;
-    fragEditor.value = fragmentSource;
+  // Put the loaded source into the editors
+  vertEditor.value = vertexSource;
+  fragEditor.value = fragmentSource;
 }
 
 function initShaderProgram() {
@@ -215,17 +218,11 @@ function render() {
   gl.uniformMatrix4fv(uMVM, false, modelViewMatrix);
   gl.uniformMatrix4fv(uMTM, false, modelTransformationMatrix);
 
-  gl.bindBuffer(gl.ARRAY_BUFFER, vbo);
-  gl.enableVertexAttribArray(posLoc);
-  gl.vertexAttribPointer(posLoc, 3, gl.FLOAT, false, 0, 0);
-
-  gl.bindBuffer(gl.ARRAY_BUFFER, nbo);
-  gl.enableVertexAttribArray(colorLoc);
-  gl.vertexAttribPointer(colorLoc, 3, gl.FLOAT, false, 0, 0);
-  gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, ibo);
-
-  // draw the object by the index order
-  gl.drawElements(gl.TRIANGLES, indices.length, gl.UNSIGNED_SHORT, 0);
+  for (let i = 0; i < sceneObjects.length; i++) {
+    const obj = sceneObjects[i];
+    obj.bindBuffers(gl, posLoc, colorLoc);
+    obj.draw(gl);
+  }
 }
 
 /**
@@ -253,5 +250,4 @@ async function main() {
   // };
 }
 
-
-main()
+main();

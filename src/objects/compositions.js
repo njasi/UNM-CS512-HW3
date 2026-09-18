@@ -1,4 +1,4 @@
-// TODO generate objects from a composition of primitives
+// TODO generate shapes from a composition of primitives
 
 // raft
 // bunch of cylinders horizontally as body

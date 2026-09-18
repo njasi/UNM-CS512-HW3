@@ -119,6 +119,13 @@ function generateGrid(segments, size) {
   };
 }
 
+/**
+ * Generate a filler color array for an object
+ * @param {*} vertCount 
+ * @param {*} color 
+ * @param {*} alpha 
+ * @returns Float32Array of colors
+ */
 function generateFillerColors(vertCount, color = undefined, alpha = false) {
   const colors = [];
 
