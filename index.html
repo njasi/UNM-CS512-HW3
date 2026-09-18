@@ -6,22 +6,14 @@
     <!-- load styles from the main site if we online -->
     <link href="/styles.css" rel="stylesheet" />
 
+    <!-- TODO should webpack all these files together -->
+    <script defer src="./src/transformations.js"></script>
     <script defer src="./src/objects/primitives.js"></script>
     <script defer src="./src/objects/SceneObject.js"></script>
-    <script defer src="./src/transformations.js"></script>
-    <script defer src="./src/webgl-setup.js"></script>
-
-    <!-- NOTE: shaders are loaded from files now in webgl-setup.js-->
-    <!-- <script
-      id="vertex-shader"
-      src="./src/shaders/vertex-shader.vert"
-      type="x-shader/x-vertex"
-    ></script>
-    <script
-      src="./src/shaders/fragment.frag"
-      id="fragment-shader"
-      type="x-shader/x-fragment"
-    ></script> -->
+    <script defer src="./src/Camera.js"></script>
+    <script defer src="./src/Shader.js"></script>
+    <script defer src="./src/Scene.js"></script>
+    <script defer src="./src/index.js"></script>
   </head>
 
   <body>

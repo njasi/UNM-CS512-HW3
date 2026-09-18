@@ -1,5 +1,3 @@
-console.log("loaded primitives");
-
 function generateCube() {
   // cube
   const positions = new Float32Array([
