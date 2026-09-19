@@ -21,7 +21,7 @@ class Camera {
     this.zFar = zFar;
     this.orthoSize = orthoSize;
 
-    this.projection = this.createOrthographicProjection();
+    this.projection = this.createPerspectiveProjection();
   }
 
   createPerspectiveProjection() {

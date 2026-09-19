@@ -50,24 +50,174 @@ function generateCube() {
   return { vertices: positions, colors, indices };
 }
 
-function generateSphere() {
+function generateSphere(segments, r, x_c, y_c, z_c) {
+  const vertices = [];
+  const indices = [];
+
+  for (let v = 0; v <= segments; v++) {
+    const vRad = (Math.PI * v) / segments;
+
+    const vertZ = z_c + r * Math.cos(vRad);
+    for (let u = 0; u <= segments; u++) {
+      const uRad = (2 * Math.PI * u) / segments;
+
+      const vertX = x_c + r * Math.sin(vRad) * Math.sin(uRad);
+      const vertY = y_c + r * Math.sin(vRad) * Math.cos(uRad);
+
+      vertices.push(vertX, vertY, vertZ);
+    }
+  }
+
+  for (let v = 0; v < segments; v++) {
+    for (let u = 0; u < segments; u++) {
+      const i_0 = v * (segments + 1) + u;
+      const i_1 = i_0 + 1;
+      const i_2 = i_0 + segments + 1;
+      const i_3 = i_2 + 1;
+
+      // push the two triangle faces
+      indices.push(i_0, i_2, i_1, i_1, i_2, i_3);
+    }
+  }
+
+  // package it for the buffers
+  return {
+    vertices: new Float32Array(vertices),
+    indices: new Uint16Array(indices),
+    vertexCount: vertices.length / 3,
+    indexCount: indices.length,
+  };
+}
+
+function generateCone(segments, r, h, x_c, y_c, z_c, solid = true) {
+  const vertices = [];
+  const indices = [];
+
+  for (let v = 0; v <= segments; v++) {
+    const vFrac = v / segments;
+
+    const vertZ = z_c + vFrac * h;
+    for (let u = 0; u <= segments; u++) {
+      const uRad = (2 * Math.PI * u) / segments;
+
+      const vertX = x_c + r * (1 - vFrac) * Math.cos(uRad);
+      const vertY = y_c + r * (1 - vFrac) * Math.sin(uRad);
+
+      vertices.push(vertX, vertY, vertZ);
+    }
+  }
+
+  for (let v = 0; v < segments; v++) {
+    for (let u = 0; u < segments; u++) {
+      const i_0 = v * (segments + 1) + u;
+      const i_1 = i_0 + 1;
+      const i_2 = i_0 + segments + 1;
+      const i_3 = i_2 + 1;
+
+      // push the two triangle faces
+      indices.push(i_0, i_2, i_1, i_1, i_2, i_3);
+    }
+  }
+
+  if (solid) {
+    const bottomCenterIndex = vertices.length / 3;
+
+    vertices.push(x_c, y_c, z_c);
+
+    for (let u = 0; u < segments; u++) {
+      const current = u;
+      const next = u + 1;
+
+      indices.push(bottomCenterIndex, next, current);
+    }
+  }
+
+  // package it for the buffers
+  return {
+    vertices: new Float32Array(vertices),
+    indices: new Uint16Array(indices),
+    vertexCount: vertices.length / 3,
+    indexCount: indices.length,
+  };
+}
+
+function generatePrism() {
   // TODO
 }
 
-function generateCone() {
-  // TODO
-}
+function generateCylinder(
+  segments,
+  r,
+  h,
+  x_c,
+  y_c,
+  z_c,
+  bulge = 0,
+  solid = true,
+) {
+  const vertices = [];
+  const indices = [];
 
-function generateRectangularPrism() {
-  // TODO
-}
+  for (let v = 0; v <= segments; v++) {
+    const vFrac = v / segments;
 
-function generateCylinder() {
-  // TODO
-}
+    const vertZ = z_c - h / 2 + vFrac * h;
+    for (let u = 0; u <= segments; u++) {
+      const uRad = (2 * Math.PI * u) / segments;
 
-function generateBulgingCylinder() {
-  // TODO
+      const bulgeAmt = 1 + bulge * Math.sin(vFrac * Math.PI);
+
+      const vertX = x_c + r * bulgeAmt * Math.cos(uRad);
+      const vertY = y_c + r * bulgeAmt * Math.sin(uRad);
+
+      vertices.push(vertX, vertY, vertZ);
+    }
+  }
+
+  for (let v = 0; v < segments; v++) {
+    for (let u = 0; u < segments; u++) {
+      const i_0 = v * (segments + 1) + u;
+      const i_1 = i_0 + 1;
+      const i_2 = i_0 + segments + 1;
+      const i_3 = i_2 + 1;
+
+      // push the two triangle faces
+      indices.push(i_0, i_2, i_1, i_1, i_2, i_3);
+    }
+  }
+
+  if (solid) {
+    const bottomCenterIndex = vertices.length / 3;
+
+    vertices.push(x_c, y_c, z_c - h / 2);
+
+    for (let u = 0; u < segments; u++) {
+      const current = u;
+      const next = u + 1;
+
+      indices.push(bottomCenterIndex, next, current);
+    }
+
+    const topCenterIndex = vertices.length / 3;
+    vertices.push(x_c, y_c, z_c + h / 2);
+
+    const topStart = segments * (segments + 1);
+
+    for (let u = 0; u < segments; u++) {
+      const current = topStart + u;
+      const next = current + 1;
+
+      indices.push(topCenterIndex, current, next);
+    }
+  }
+
+  // package it for the buffers
+  return {
+    vertices: vertices,
+    indices: indices,
+    vertexCount: vertices.length / 3,
+    indexCount: indices.length,
+  };
 }
 
 function generateTorus() {
@@ -119,10 +269,10 @@ function generateGrid(segments, size) {
 
 /**
  * Generate a filler color array for an object
- * @param {*} vertCount 
- * @param {*} color 
- * @param {*} alpha 
- * @returns Float32Array of colors
+ * @param {*} vertCount
+ * @param {*} color
+ * @param {*} alpha
+ * @returns number array of colors
  */
 function generateFillerColors(vertCount, color = undefined, alpha = false) {
   const colors = [];
@@ -140,5 +290,5 @@ function generateFillerColors(vertCount, color = undefined, alpha = false) {
     }
   }
 
-  return new Float32Array(colors);
+  return colors;
 }

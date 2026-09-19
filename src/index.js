@@ -18,18 +18,29 @@ scene.shaders.push(
   ),
 );
 
-function addWater() {
+function addBarrel() {
   // // generate a primitive
+  let step = 4;
+  for (let i = 0; i < 11; i++) {
+    for (let j = 0; j < 11; j++) {
+      for (let k = 0; k < 11; k++) {
+        const barrel = generateBarrelObject(
+          "barrel",
+          undefined,
+          10,
+          1,
+          2.5,
+          (i - 5) * step,
+          (j - 5) * step,
+          (k - 5) * step,
+          0.2,
+        );
 
-  const { vertices, indices, vertexCount } = generateGrid(30, 5);
-  const fillerColors = generateFillerColors(vertexCount);
-
-  let water = new SceneObject("water", vertices, fillerColors, indices);
-
-  scene.addObject(water);
+        scene.addObject(barrel);
+      }
+    }
+  }
 }
-
-addWater();
 
 function setupMouseControls() {
   // Mouse and keyboard interactions
@@ -99,8 +110,8 @@ let startTime = Date.now();
  * - attach animation loop \
  */
 async function main() {
-  addWater();
-  
+  addBarrel();
+
   await scene.loadShaders();
 
   // this is kinda annoying, maybe i move them to a map
