@@ -12,7 +12,7 @@
 //   [ 0  n   0    0  ]
 //   [ 0  0  f+n  -fn ]
 //   [ 0  0   1    0  ]
-function frustum2Box(near, far) {
+export function frustum2Box(near, far) {
     return new Float32Array([
         near, 0, 0, 0,
         0, near, 0, 0,
@@ -26,7 +26,7 @@ function frustum2Box(near, far) {
 //   [    0    2/(t-b)     0      -(t+b)/(t-b) ]
 //   [    0       0     2/(f-n)   -(f+n)/(f-n) ]
 //   [    0       0        0            1      ]
-function box2Cube(left, right, bottom, top, near, far) {
+export function box2Cube(left, right, bottom, top, near, far) {
     const rl = 1 / (right - left), tb = 1 / (top - bottom), fn = 1 / (far - near);
     return new Float32Array([
         2 * rl, 0, 0, 0,
@@ -38,13 +38,13 @@ function box2Cube(left, right, bottom, top, near, far) {
 
 //Camera Looks down -z, near/far passed as positive distances into the
 //+z-forward convention P and M_orth are written in
-function flipZ() {
+export function flipZ() {
     return new Float32Array([1, 0, 0, 0, 0, 1, 0, 0, 0, 0, -1, 0, 0, 0, 0, 1]);
 }
 
 
 // Matrix multiplication
-function multiplyMat4(a, b) {
+export function multiplyMat4(a, b) {
     let r = new Float32Array(16);
     for (let i = 0; i < 4; i++) for (let j = 0; j < 4; j++) {
         let sum = 0;
@@ -58,12 +58,12 @@ function multiplyMat4(a, b) {
 
 // Multiply matrices left to right, e.g. matMul(A, B, C) is A * B * C.
 // JavaScript has no operator overloading, GLSL does overload `*` for mat4
-function matMul(...matrices) {
+export function matMul(...matrices) {
     return matrices.reduce(multiplyMat4);
 }
 
 // General perspective frustum
-function frustum(left, right, bottom, top, near, far) {
+export function frustum(left, right, bottom, top, near, far) {
     const M_orth = box2Cube(left, right, bottom, top, near, far);
     const P      = frustum2Box(near, far);
     const F      = flipZ();
@@ -71,14 +71,14 @@ function frustum(left, right, bottom, top, near, far) {
 }
 
 // Symmetric frustum from vertical field of view. fov in radians.
-function perspective(fov, aspect, near, far) {
+export function perspective(fov, aspect, near, far) {
     const top = near * Math.tan(fov / 2);
     const right = top * aspect;
     return frustum(-right, right, -top, top, near, far);
 }
 
 // Orthographic matrix
-function ortho(left, right, bottom, top, near, far) {
+export function ortho(left, right, bottom, top, near, far) {
     const lr = 1 / (left - right), bt = 1 / (bottom - top), nf = 1 / (near - far);
     return new Float32Array([
         -2*lr, 0, 0, 0,
@@ -89,12 +89,12 @@ function ortho(left, right, bottom, top, near, far) {
 }
 
 // Identity matrix
-function mat4Identity() {
+export function mat4Identity() {
     return new Float32Array([1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1]);
 }
 
 // Matrix translation
-function mat4Translate(matrix, translation) {
+export function mat4Translate(matrix, translation) {
     const result = new Float32Array(matrix);
     result[12] = matrix[0] * translation[0] + matrix[4] * translation[1] + matrix[8] * translation[2] + matrix[12];
     result[13] = matrix[1] * translation[0] + matrix[5] * translation[1] + matrix[9] * translation[2] + matrix[13];
@@ -104,7 +104,7 @@ function mat4Translate(matrix, translation) {
 }
 
 // Matrix rotation around X axis
-function mat4RotateX(matrix, angle) {
+export function mat4RotateX(matrix, angle) {
     const c = Math.cos(angle);
     const s = Math.sin(angle);
     const result = new Float32Array(matrix);
@@ -125,7 +125,7 @@ function mat4RotateX(matrix, angle) {
 }
 
 // Matrix rotation around Y axis
-function mat4RotateY(matrix, angle) {
+export function mat4RotateY(matrix, angle) {
     const c = Math.cos(angle);
     const s = Math.sin(angle);
     const result = new Float32Array(matrix);
@@ -147,7 +147,7 @@ function mat4RotateY(matrix, angle) {
 
 
 // [optional] Helper function converting math format row-major matrices into a flat column-major array.
-// function mat4FromRows(m00, m01, m02, m03,
+// export function mat4FromRows(m00, m01, m02, m03,
 //                       m10, m11, m12, m13,
 //                       m20, m21, m22, m23,
 //                       m30, m31, m32, m33) {

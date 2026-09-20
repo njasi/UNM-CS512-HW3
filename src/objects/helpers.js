@@ -1,8 +1,22 @@
+import SceneObject from "./SceneObject"
+
+import {
+  generateBarrel,
+} from "./compositions";
+
+import {
+  generateCone,
+  generateCylinder,
+  generateGrid,
+  generateNGonPrism,
+  generateSphere,
+  generateFillerColors
+} from "./primitives"
 
 /**
  * Helper function that turns a primitive
  * generator into a SceneObject generator
- * @param {function} generatePrimitive 
+ * @param {function} generatePrimitive
  * @returns {SceneObject}
  */
 function makeSceneObjectGenerator(generatePrimitive) {
@@ -23,11 +37,10 @@ function makeSceneObjectGenerator(generatePrimitive) {
   };
 }
 
-
 /**
  * Generate a Parametric (kinda) Barrel
  * one cylinder as main body
- *  - the barrel body should be low to get the 
+ *  - the barrel body should be low to get the
  *    look of individual staves for free
  * 4 cylinders for the binding rings
  *
@@ -42,7 +55,7 @@ function makeSceneObjectGenerator(generatePrimitive) {
  * @param {*} bulge the amount of bulge the barrel has
  * @returns
  */
-const generateBarrelObject = makeSceneObjectGenerator(generateBarrel);
+export const generateBarrelObject = makeSceneObjectGenerator(generateBarrel);
 
 /**
  * Generate a cone
@@ -57,7 +70,7 @@ const generateBarrelObject = makeSceneObjectGenerator(generateBarrel);
  * @param {*} solid if the bottom of the cone should be closed
  * @returns
  */
-const generateConeObject = makeSceneObjectGenerator(generateCone);
+export const generateConeObject = makeSceneObjectGenerator(generateCone);
 
 /**
  * Generate a sphere object
@@ -68,7 +81,7 @@ const generateConeObject = makeSceneObjectGenerator(generateCone);
  * @param {*} z_c z coord of the center of the cylinder
  * @returns
  */
-const generateSphereObject = makeSceneObjectGenerator(generateSphere);
+export const generateSphereObject = makeSceneObjectGenerator(generateSphere);
 
 /**
  * Generate a "Cylinder" object
@@ -85,7 +98,8 @@ const generateSphereObject = makeSceneObjectGenerator(generateSphere);
  * @param {*} segments_h, how many divisions there are along the z axis
  * @returns
  */
-const generateCylinderObject = makeSceneObjectGenerator(generateCylinder);
+export const generateCylinderObject =
+  makeSceneObjectGenerator(generateCylinder);
 
 /**
  * Generate a square grid centered on the origin
@@ -97,7 +111,7 @@ const generateCylinderObject = makeSceneObjectGenerator(generateCylinder);
  * @param {*} y_c y coord of the center of the cylinder
  * @param {*} z_c z coord of the center of the cylinder
  */
-const generateGridObject = makeSceneObjectGenerator(generateGrid);
+export const generateGridObject = makeSceneObjectGenerator(generateGrid);
 
 /**
  * Generate a n-gon prism
@@ -111,4 +125,5 @@ const generateGridObject = makeSceneObjectGenerator(generateGrid);
  * @param {*} z_c z coord of the center of the cylinder
  * @returns
  */
-const generateNGonPrismObject = makeSceneObjectGenerator(generateNGonPrism);
+export const generateNGonPrismObject =
+  makeSceneObjectGenerator(generateNGonPrism);

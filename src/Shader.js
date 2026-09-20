@@ -1,4 +1,4 @@
-class Shader {
+export default class Shader {
   constructor(label, type, source, source_url) {
     this.label = label;
     this.type = type

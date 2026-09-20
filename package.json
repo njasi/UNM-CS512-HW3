@@ -1,0 +1,25 @@
+{
+  "name": "hw3",
+  "version": "1.0.0",
+  "description": "Third homework from CS512: Introduction to computer graphics @ UNM fall 2026",
+  "main": "index.js",
+  "scripts": {
+    "start": "webpack serve",
+    "build": "webpack --mode production"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/njasi/UNM-CS512-HW3.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/njasi/UNM-CS512-HW3/issues"
+  },
+  "homepage": "https://github.com/njasi/UNM-CS512-HW3#readme",
+  "devDependencies": {
+    "webpack": "^5.111.1",
+    "webpack-cli": "^7.2.3",
+    "webpack-dev-server": "^6.0.0"
+  }
+}

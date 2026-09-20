@@ -1,4 +1,8 @@
-class Scene {
+import Camera from "./Camera";
+import Shader from "./Shader";
+import { multiplyMat4, mat4Identity } from "./transformations";
+
+export default class Scene {
   constructor(canvasID) {
     this.canvas = document.getElementById(canvasID);
     this.gl = this.canvas.getContext("webgl2");
@@ -21,10 +25,8 @@ class Scene {
     this.uPM = undefined;
     this.uMTM = undefined;
 
-
     this.rotationX = 0;
     this.rotationY = 0;
-
 
     this.camera = new Camera(this.canvas.height / this.canvas.width);
 
@@ -42,7 +44,7 @@ class Scene {
   async loadShaders() {
     await Promise.all(this.shaders.map((shader) => shader.loadRemote()));
 
-    for(let i = 0; i< this.shaders.length; i++){
+    for (let i = 0; i < this.shaders.length; i++) {
       this.shaders[i].create(this.gl);
     }
   }
@@ -70,7 +72,6 @@ class Scene {
     // TODO dynamic setup of shaders...
     const vs = this.shaders[0];
     const fs = this.shaders[1];
-
 
     let prog = this.gl.createProgram();
     this.gl.attachShader(prog, vs.shader);
@@ -173,7 +174,7 @@ class Scene {
     let modelViewMatrix = this.camera.getViewMatrix();
     // get projection from camera
     const projectionMatrix = this.camera.getProjectionMatrix();
-    
+
     // init model transformation matrix as identity matrix
     let modelTransformationMatrix = mat4Identity();
     // object rotation

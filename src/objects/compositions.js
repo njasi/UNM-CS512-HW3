@@ -7,10 +7,12 @@
 // one cylinder or prism crossbar
 // rectangular prism sail
 
+import { generateCylinder, generateFillerColors } from "./primitives";
+
 /**
  * Generate a Parametric (kinda) Barrel
  * one cylinder as main body
- *  - the barrel body should be low to get the 
+ *  - the barrel body should be low to get the
  *    look of individual staves for free
  * 4 cylinders for the binding rings
  *
@@ -23,7 +25,16 @@
  * @param {*} bulge
  * @returns
  */
-function generateBarrel(segments, r, h, x_c, y_c, z_c, bulge = 0.4, staves = 10) {
+export function generateBarrel(
+  segments,
+  r,
+  h,
+  x_c,
+  y_c,
+  z_c,
+  bulge = 0.4,
+  staves = 10,
+) {
   let {
     vertices: mainVert,
     indices: mainInd,

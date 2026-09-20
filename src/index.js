@@ -1,3 +1,7 @@
+import Scene from "./Scene"
+import Shader from "./Shader"
+import { generateBarrelObject } from "./objects"
+
 const canvas = document.getElementById("glcanvas");
 const vertEditor = document.getElementById("vertEditor");
 const fragEditor = document.getElementById("fragEditor");

@@ -13,7 +13,7 @@
  * - transformation matrix previously used?
  */
 
-class SceneObject {
+export default class SceneObject {
   constructor(label, vertices, colors, indices, parent = undefined) {
     this.label = label;
 

@@ -1,4 +1,6 @@
-class Camera {
+import { perspective, mat4Translate, matMul, box2Cube, frustum2Box, mat4Identity} from "./transformations";
+
+export default class Camera {
   constructor(
     aspect,
     {

@@ -48,3 +48,21 @@ In this assignment, you will extend the provided hw3.zip below to build your int
 
 
 - is there a extremely simple lighting I can apply, don't want to live with the flat look.
+
+
+## Development
+
+Setup
+```sh
+npm i
+```
+
+Dev Server
+```sh
+npm run start
+```
+
+Production build
+```sh
+npm run build
+```

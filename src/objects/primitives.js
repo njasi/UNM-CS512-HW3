@@ -1,6 +1,6 @@
-function generateCube() {
+export function generateCube() {
   // cube
-  const positions = new Float32Array([
+  const positions = [
     -1,
     -1,
     -1, // 0
@@ -25,14 +25,14 @@ function generateCube() {
     -1,
     1,
     1, // 7
-  ]);
+  ];
 
-  const colors = new Float32Array([
+  const colors = [
     1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 1, 0, 1, 0, 1, 0, 1, 1, 1, 1, 0, 1, 0, 1,
-  ]);
+  ];
 
   // faces
-  const indices = new Uint16Array([
+  const indices = [
     // Front
     4, 5, 6, 4, 6, 7,
     // Back
@@ -45,7 +45,7 @@ function generateCube() {
     1, 2, 6, 1, 6, 5,
     // Left
     0, 4, 7, 0, 7, 3,
-  ]);
+  ];
 
   return { vertices: positions, colors, indices };
 }
@@ -59,7 +59,7 @@ function generateCube() {
  * @param {*} z_c z coord of the center of the cylinder
  * @returns 
  */
-function generateSphere(segments, r, x_c, y_c, z_c) {
+export function generateSphere(segments, r, x_c, y_c, z_c) {
   const vertices = [];
   const indices = [];
 
@@ -109,7 +109,7 @@ function generateSphere(segments, r, x_c, y_c, z_c) {
  * @param {*} solid if the bottom of the cone should be closed
  * @returns 
  */
-function generateCone(segments, r, h, x_c, y_c, z_c, solid = true) {
+export function generateCone(segments, r, h, x_c, y_c, z_c, solid = true) {
   const vertices = [];
   const indices = [];
 
@@ -171,7 +171,7 @@ function generateCone(segments, r, h, x_c, y_c, z_c, solid = true) {
  * @param {*} z_c z coord of the center of the cylinder
  * @returns 
  */
-function generateNGonPrism(n, r, h, x_c, y_c, z_c) {
+export function generateNGonPrism(n, r, h, x_c, y_c, z_c) {
   return generateCylinder(n, r, h, x_c, y_c, z_c, 0, true, 2);
 }
 
@@ -188,7 +188,7 @@ function generateNGonPrism(n, r, h, x_c, y_c, z_c) {
  * @param {*} segments_h, how many divisions there are along the z axis
  * @returns 
  */
-function generateCylinder(
+export function generateCylinder(
   segments,
   r,
   h,
@@ -266,7 +266,7 @@ function generateCylinder(
   };
 }
 
-function generateTorus() {
+export function generateTorus() {
   // TODO
 }
 
@@ -278,7 +278,7 @@ function generateTorus() {
  * @param {*} y_c y coord of the center of the cylinder
  * @param {*} z_c z coord of the center of the cylinder
  */
-function generateGrid(segments, size, x_c = 0, y_c = 0, z_c = 0) {
+export function generateGrid(segments, size, x_c = 0, y_c = 0, z_c = 0) {
   const vertices = [];
   const indices = [];
 
@@ -323,7 +323,7 @@ function generateGrid(segments, size, x_c = 0, y_c = 0, z_c = 0) {
  * @param {*} alpha
  * @returns number array of colors
  */
-function generateFillerColors(vertCount, color = undefined, alpha = false) {
+export function generateFillerColors(vertCount, color = undefined, alpha = false) {
   const colors = [];
 
   for (let i = 0; i < vertCount; i++) {
