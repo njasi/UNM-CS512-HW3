@@ -19,7 +19,7 @@ import {
  * @param {function} generatePrimitive
  * @returns {SceneObject}
  */
-function makeSceneObjectGenerator(generatePrimitive) {
+export function makeSceneObjectGenerator(generatePrimitive) {
   return function genericSceneObjectGenerator(objectName, color = undefined) {
     console.log(...[...arguments].slice(2));
     const { vertices, indices, vertexCount, colors } = generatePrimitive(

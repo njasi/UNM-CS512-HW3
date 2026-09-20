@@ -1,6 +1,8 @@
-import Scene from "./Scene"
-import Shader from "./Shader"
-import { generateBarrelObject } from "./objects"
+import Scene from "./Scene";
+import Shader from "./Shader";
+import { generateBarrelObject } from "./objects";
+
+import { cacheOBJ, generateOBJObject } from "./objects/objLoader";
 
 const canvas = document.getElementById("glcanvas");
 const vertEditor = document.getElementById("vertEditor");
@@ -36,7 +38,7 @@ function addBarrel() {
     0.2,
   );
 
-  scene.addObject(barrel);
+  // scene.addObject(barrel);
 }
 
 // rgba(1, 113, 187)
@@ -112,7 +114,10 @@ let startTime = Date.now();
  * - attach animation loop \
  */
 async function main() {
-  addBarrel();
+  // addBarrel();
+
+  await cacheOBJ("./dist/utah_teapot.obj", "teapot");
+  scene.addObject(generateOBJObject("teapot1", undefined, "teapot"));
 
   await scene.loadShaders();
 
