@@ -20,27 +20,25 @@ scene.shaders.push(
 
 function addBarrel() {
   // // generate a primitive
-  let step = 4;
-  for (let i = 0; i < 11; i++) {
-    for (let j = 0; j < 11; j++) {
-      for (let k = 0; k < 11; k++) {
-        const barrel = generateBarrelObject(
-          "barrel",
-          undefined,
-          10,
-          1,
-          2.5,
-          (i - 5) * step,
-          (j - 5) * step,
-          (k - 5) * step,
-          0.2,
-        );
+  const barrel = generateBarrelObject(
+    "barrel",
+    undefined,
+    20,
+    1,
+    2.5,
+    0,
+    0,
+    0,
+    0.2,
+  );
 
-        scene.addObject(barrel);
-      }
-    }
-  }
+  scene.addObject(barrel);
 }
+
+// rgba(1, 113, 187)
+// scene.addObject(
+//   generateGridObject("sea", [1 / 255, 113 / 255, 187 / 255], 100, 100),
+// );
 
 function setupMouseControls() {
   // Mouse and keyboard interactions

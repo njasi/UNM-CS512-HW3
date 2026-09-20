@@ -10,8 +10,8 @@
 /**
  * Generate a Parametric (kinda) Barrel
  * one cylinder as main body
- *  - the barrel body should be low
- *    to  get the look of individual staves for free
+ *  - the barrel body should be low to get the 
+ *    look of individual staves for free
  * 4 cylinders for the binding rings
  *
  * @param {*} segments
@@ -23,12 +23,12 @@
  * @param {*} bulge
  * @returns
  */
-function generateBarrel(segments, r, h, x_c, y_c, z_c, bulge = 0.4) {
+function generateBarrel(segments, r, h, x_c, y_c, z_c, bulge = 0.4, staves = 10) {
   let {
     vertices: mainVert,
     indices: mainInd,
     vertexCount: mainVCount,
-  } = generateCylinder(segments, r, h, x_c, y_c, z_c, bulge);
+  } = generateCylinder(staves, r, h, x_c, y_c, z_c, bulge, true, segments);
 
   const bracePositions = [-0.449, -0.2, 0.2, 0.449];
 
@@ -41,18 +41,21 @@ function generateBarrel(segments, r, h, x_c, y_c, z_c, bulge = 0.4) {
   for (let i = 0; i < bracePositions.length; i++) {
     const brace_z = z_c + bracePositions[i] * h;
     const brace_r_angle = Math.PI * (bracePositions[i] + 0.5);
-    
+
     const {
       vertices: braceVert,
       indices: braceInd,
       vertexCount: braceVCount,
     } = generateCylinder(
-      segments,
+      staves,
       r + r * (bulge + 0.07) * Math.sin(brace_r_angle),
       0.1 * h,
       x_c,
       y_c,
       brace_z,
+      0,
+      true,
+      2,
     );
 
     mainVert.push(...braceVert);
@@ -62,9 +65,9 @@ function generateBarrel(segments, r, h, x_c, y_c, z_c, bulge = 0.4) {
   }
 
   return {
-    vertices: new Float32Array(mainVert),
-    colors: new Float32Array(mainColors),
-    indices: new Uint16Array(mainInd),
+    vertices: mainVert,
+    colors: mainColors,
+    indices: mainInd,
     vertexCount: mainVert.length / 3,
     indexCount: mainInd.length,
   };

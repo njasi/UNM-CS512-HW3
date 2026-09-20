@@ -50,6 +50,15 @@ function generateCube() {
   return { vertices: positions, colors, indices };
 }
 
+/**
+ * Generate a sphere
+ * @param {*} segments how many divisions there are
+ * @param {*} r the radius of the sphere
+ * @param {*} x_c x coord of the center of the cylinder
+ * @param {*} y_c y coord of the center of the cylinder
+ * @param {*} z_c z coord of the center of the cylinder
+ * @returns 
+ */
 function generateSphere(segments, r, x_c, y_c, z_c) {
   const vertices = [];
   const indices = [];
@@ -89,6 +98,17 @@ function generateSphere(segments, r, x_c, y_c, z_c) {
   };
 }
 
+/**
+ * Generate a cone
+ * @param {*} segments how many divisions there are
+ * @param {*} r the radius of the base of the cone
+ * @param {*} h the hright of the cone
+ * @param {*} x_c x coord of the center of the cylinder
+ * @param {*} y_c y coord of the center of the cylinder
+ * @param {*} z_c z coord of the center of the cylinder
+ * @param {*} solid if the bottom of the cone should be closed
+ * @returns 
+ */
 function generateCone(segments, r, h, x_c, y_c, z_c, solid = true) {
   const vertices = [];
   const indices = [];
@@ -141,10 +161,33 @@ function generateCone(segments, r, h, x_c, y_c, z_c, solid = true) {
   };
 }
 
-function generatePrism() {
-  // TODO
+/**
+ * Generate a n-gon prism
+ * @param {*} n the amount of sides on the n-gon
+ * @param {*} r the radius of the circle the n-gon can be inscribed in
+ * @param {*} h the hight of the prism
+ * @param {*} x_c x coord of the center of the cylinder
+ * @param {*} y_c y coord of the center of the cylinder
+ * @param {*} z_c z coord of the center of the cylinder
+ * @returns 
+ */
+function generateNGonPrism(n, r, h, x_c, y_c, z_c) {
+  return generateCylinder(n, r, h, x_c, y_c, z_c, 0, true, 2);
 }
 
+/**
+ * Generate a "Cylinder"
+ * @param {*} segments how many divisions there are
+ * @param {*} r radius of the cylinder
+ * @param {*} h height of the cylinder
+ * @param {*} x_c x coord of the center of the cylinder
+ * @param {*} y_c y coord of the center of the cylinder
+ * @param {*} z_c z coord of the center of the cylinder
+ * @param {*} bulge amount of "bulge" the cylinder should have
+ * @param {*} solid if false, do not close the ends of the cylinder
+ * @param {*} segments_h, how many divisions there are along the z axis
+ * @returns 
+ */
 function generateCylinder(
   segments,
   r,
@@ -154,12 +197,15 @@ function generateCylinder(
   z_c,
   bulge = 0,
   solid = true,
+  segments_h = undefined,
 ) {
   const vertices = [];
   const indices = [];
 
-  for (let v = 0; v <= segments; v++) {
-    const vFrac = v / segments;
+  segments_h = segments_h == undefined ? segments : segments_h;
+
+  for (let v = 0; v <= segments_h; v++) {
+    const vFrac = v / segments_h;
 
     const vertZ = z_c - h / 2 + vFrac * h;
     for (let u = 0; u <= segments; u++) {
@@ -174,7 +220,7 @@ function generateCylinder(
     }
   }
 
-  for (let v = 0; v < segments; v++) {
+  for (let v = 0; v < segments_h; v++) {
     for (let u = 0; u < segments; u++) {
       const i_0 = v * (segments + 1) + u;
       const i_1 = i_0 + 1;
@@ -201,7 +247,7 @@ function generateCylinder(
     const topCenterIndex = vertices.length / 3;
     vertices.push(x_c, y_c, z_c + h / 2);
 
-    const topStart = segments * (segments + 1);
+    const topStart = segments_h * (segments + 1);
 
     for (let u = 0; u < segments; u++) {
       const current = topStart + u;
@@ -228,18 +274,21 @@ function generateTorus() {
  * Generate a square grid centered on the origin
  * @param {*} segments
  * @param {*} size
+ * @param {*} x_c x coord of the center of the cylinder
+ * @param {*} y_c y coord of the center of the cylinder
+ * @param {*} z_c z coord of the center of the cylinder
  */
-function generateGrid(segments, size) {
+function generateGrid(segments, size, x_c = 0, y_c = 0, z_c = 0) {
   const vertices = [];
   const indices = [];
 
   // iterate over depth
   for (let z = 0; z <= segments; z++) {
-    const vertZ = (z / segments - 0.5) * size;
+    const vertZ = (z / segments - 0.5) * size + z_c;
     // iterate side to side
     for (let x = 0; x <= segments; x++) {
-      const vertX = (x / segments - 0.5) * size;
-      vertices.push(vertX, 0, vertZ);
+      const vertX = (x / segments - 0.5) * size + x_c;
+      vertices.push(vertX, y_c, vertZ);
     }
   }
 
