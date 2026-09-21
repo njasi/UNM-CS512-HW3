@@ -11,7 +11,7 @@ export class RainEmitter extends ParticleEmitter {
     this.rate = rate;
   }
 
-  animate() {
+  update() {
     // TODO spawn rain particles in the bounding box
   }
 }

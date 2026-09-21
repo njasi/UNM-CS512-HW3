@@ -92,7 +92,7 @@ export default class SceneObject {
     gl.drawElements(gl.TRIANGLES, this.indices.length, gl.UNSIGNED_SHORT, 0);
   }
 
-  animate(dt) {
+  update(dt, scene) {
     // TODO, implement by extending this class
   }
 }

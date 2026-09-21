@@ -22,7 +22,7 @@ export default class ParticleEmitter extends SceneObject{
         // NOTE: particle emitters should not draw themselves...
     }
 
-    animate(){
+    update(){
         // TODO
         // - spawn in children particles
         // - kill them when they arent needed anymore

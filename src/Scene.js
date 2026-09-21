@@ -145,6 +145,13 @@ export default class Scene {
     this.rotationY = y;
   }
 
+  update(dt){
+    for (let i = 0; i < this.objects.length; i++) {
+      const obj = this.objects[i];
+      obj.update(dt, this)
+    }
+  }
+
   render() {
     if (!this.gl) {
       console.error("Scene has no WebGL context");
