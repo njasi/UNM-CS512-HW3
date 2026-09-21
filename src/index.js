@@ -1,6 +1,6 @@
 import Scene from "./Scene";
 import Shader from "./Shader";
-import { generateBarrelObject, generateCannonObject, generateCylinderObject } from "./objects";
+import { generateBarrelObject, generateBombObject, generateCannonObject, generateCylinderObject, generateGridObject, rgba } from "./objects";
 
 import { cacheOBJ, generateOBJObject } from "./objects/objLoader";
 
@@ -11,13 +11,13 @@ const fragEditor = document.getElementById("fragEditor");
 // try to plug in new scene abstraction
 const scene = new Scene("glcanvas");
 
-scene.shaders.push(
-  new Shader("vertex", scene.gl.VERTEX_SHADER, "", "./src/shaders/vertex.vert"),
+scene.addShader(
+  new Shader("basicVertex", scene.gl.VERTEX_SHADER, "", "./src/shaders/vertex.vert"),
 );
 
-scene.shaders.push(
+scene.addShader(
   new Shader(
-    "fragment",
+    "basicFragment",
     scene.gl.FRAGMENT_SHADER,
     "",
     "./src/shaders/fragment.frag",
@@ -25,23 +25,29 @@ scene.shaders.push(
 );
 
 function addBarrel() {
-  // // generate a primitive
-  // const barrel = generateBarrelObject(
-  //   "barrel",
-  //   undefined,
-  //   20,
-  //   1,
-  //   2.5,
-  //   0,
-  //   0,
-  //   0,
-  //   0.2,
-  // );
+  // generate a primitive
+  const barrel = generateBarrelObject(
+    "barrel",
+    undefined,
+    20,
+    1,
+    2.5,
+    0,
+    0,
+    0,
+    0.2,
+  );
 
-  // scene.addObject(barrel);
+  scene.addObject(barrel, "basic");
 
-  const cannon = generateCannonObject("cannon", undefined);
-  scene.addObject(cannon);
+  // add water
+  scene.addObject(generateGridObject("water", rgba(1,86,239), 100, 40), "basic")
+  
+  // watercolor =>  rgba(1, 86, 239)
+  // const cannon = generateCannonObject("cannon", undefined);
+  // scene.addObject(cannon, "basic");
+  // const bomb = generateBombObject("bomb", undefined, 1);
+  // scene.addObject(bomb, "basic");
 
   console.log(scene.objects)
 }
@@ -119,12 +125,19 @@ let startTime = Date.now();
  * - attach animation loop \
  */
 async function main() {
-  addBarrel();
-
+  
   // await cacheOBJ("./dist/utah_teapot.obj", "teapot");
   // scene.addObject(generateOBJObject("teapot1", undefined, "teapot"));
-
+  
   await scene.loadShaders();
+  
+  scene.addProgram(
+    "basic",
+    "basicVertex",
+    "basicFragment",
+  );
+  
+  addBarrel();
 
   // this is kinda annoying, maybe i move them to a map
   const vertexShader = scene.shaders.find(
@@ -136,7 +149,6 @@ async function main() {
   vertEditor.value = vertexShader.source;
   fragEditor.value = fragmentShader.source;
 
-  scene.initShaderProgram(vertEditor.value, fragEditor.value);
   scene.initBuffers();
 
   // initShaderProgram();

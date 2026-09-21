@@ -1,5 +1,7 @@
 import Camera from "./Camera";
+import { rgba } from "./objects";
 import Shader from "./Shader";
+import ShaderProgram from "./ShaderProgram";
 import { multiplyMat4, mat4Identity } from "./transformations";
 
 export default class Scene {
@@ -10,20 +12,17 @@ export default class Scene {
     if (!this.gl) {
       alert("WebGL2 not supported");
     }
-
+    
+    // TODO replace objects & shaders with maps. will probably want lights too
     this.objects = [];
     this.lights = [];
     this.shaders = [];
-    this.background = undefined;
-
-    // TODO probably abstract these later but am already doing enough
-    this.program = undefined;
-    this.posLoc = undefined;
-    this.colorLoc = undefined;
-    this.timeLoc = undefined;
-    this.uMVM = undefined;
-    this.uPM = undefined;
-    this.uMTM = undefined;
+    this.background = rgba(64, 112, 255, 1);
+    
+    // use to check if we actually need to switch shaders...
+    this.activeProgram = undefined;
+    // Map<string, ShaderProgram>
+    this.programs = new Map();
 
     this.rotationX = 0;
     this.rotationY = 0;
@@ -50,61 +49,91 @@ export default class Scene {
   }
 
   /**
-   * create the shaders and overall gl program
+   * create the shaders and combined gl shader program
    *
-   * TODO variable amount of shaders
-   * @param {*} vsSource
-   * @param {*} fsSource
+   * @param {*} vertexShader
+   * @param {*} fragmentShader
    * @returns
    */
-  createProgram(vsSource, fsSource) {
-    // let vs = new Shader("vertex", this.gl.VERTEX_SHADER, vsSource, vsSource);
-    // let fs = new Shader(
-    //   "fragment",
-    //   this.gl.FRAGMENT_SHADER,
-    //   fsSource,
-    //   fsSource,
-    // );
+  createProgram(vertexShader, fragmentShader) {
+    const program = this.gl.createProgram();
 
-    // vs.create(this.gl);
-    // fs.create(this.gl);
+    this.gl.attachShader(program, vertexShader.shader);
+    this.gl.attachShader(program, fragmentShader.shader);
+    this.gl.linkProgram(program);
 
-    // TODO dynamic setup of shaders...
-    const vs = this.shaders[0];
-    const fs = this.shaders[1];
-
-    let prog = this.gl.createProgram();
-    this.gl.attachShader(prog, vs.shader);
-    this.gl.attachShader(prog, fs.shader);
-    this.gl.linkProgram(prog);
-
-    if (!this.gl.getProgramParameter(prog, this.gl.LINK_STATUS)) {
-      throw new Error(this.gl.getProgramInfoLog(prog));
+    if (!this.gl.getProgramParameter(program, this.gl.LINK_STATUS)) {
+      this.gl.deleteProgram(program);
+      throw new Error(
+        `Failed to link shader program: ${this.gl.getProgramInfoLog(program)}`,
+      );
     }
 
-    return prog;
+    return program;
   }
 
   /**
-   *
+   * Add a shader to the scene
+   * @param {Shader} shader 
    */
-  initShaderProgram(vertexSource, fragmentSource) {
-    try {
-      this.program = this.createProgram(this.gl, vertexSource, fragmentSource);
-      this.gl.useProgram(this.program);
+  addShader(shader) {
+    this.shaders.push(shader);
+  }
 
-      this.posLoc = this.gl.getAttribLocation(this.program, "aPosition");
-      this.colorLoc = this.gl.getAttribLocation(this.program, "aColor");
-      this.timeLoc = this.gl.getUniformLocation(this.program, "uTime");
-      this.uMVM = this.gl.getUniformLocation(this.program, "uModelViewMatrix");
-      this.uPM = this.gl.getUniformLocation(this.program, "uProjectionMatrix");
-      this.uMTM = this.gl.getUniformLocation(
-        this.program,
-        "uModelTransformationMatrix",
-      );
-    } catch (e) {
-      console.error(e);
+  /**
+   * Get a shader by its label
+   * @param {*} label 
+   * @returns 
+   */
+  getShader(label) {
+    // TODO should I shove shaders in a map?
+    const shader = this.shaders.find((shader) => shader.label === label);
+
+    if (!shader) {
+      throw new Error(`Shader "${label}" was not found`);
     }
+
+    return shader;
+  }
+
+  /**
+   * Create a new program
+   * @param {*} label
+   * @param {*} vertexShaderLabel
+   * @param {*} fragmentShaderLabel
+   * @returns
+   */
+  addProgram(label, vertexShaderLabel, fragmentShaderLabel) {
+    const vertexShader = this.getShader(vertexShaderLabel);
+    const fragmentShader = this.getShader(fragmentShaderLabel);
+
+    if (!vertexShader.shader || !fragmentShader.shader) {
+      throw new Error(
+        `Shaders for program "${label}" must be compiled before creating the program`,
+      );
+    }
+
+    const program = this.createProgram(vertexShader, fragmentShader);
+    const shaderProgram = new ShaderProgram(label, program, this.gl);
+
+    this.programs.set(label, shaderProgram);
+
+    return shaderProgram;
+  }
+
+  /**
+   * Get a program by its label
+   * @param {string} label
+   * @returns
+   */
+  getProgram(label) {
+    const shaderProgram = this.programs.get(label);
+
+    if (!shaderProgram) {
+      throw new Error(`Shader program "${label}" was not found`);
+    }
+
+    return shaderProgram;
   }
 
   /**
@@ -120,7 +149,14 @@ export default class Scene {
    * Add an object to the scene
    * TODO probably some binding needed?
    */
-  addObject(obj) {
+  addObject(obj, programLabel = obj.programLabel) {
+    if (!programLabel) {
+      throw new Error(
+        `Object "${obj.label ?? "unknown"}" does not have a shader program`,
+      );
+    }
+
+    obj.programLabel = programLabel;
     this.objects.push(obj);
   }
 
@@ -145,26 +181,28 @@ export default class Scene {
     this.rotationY = y;
   }
 
-  update(dt){
+  /**
+   * Update the state of the scene
+   * @param {*} dt timestep in seconds
+   */
+  update(dt) {
     for (let i = 0; i < this.objects.length; i++) {
       const obj = this.objects[i];
-      obj.update(dt, this)
+      obj.update(dt, this);
     }
   }
 
+  /**
+   * Render the scene
+   */
   render() {
     if (!this.gl) {
       console.error("Scene has no WebGL context");
       return;
     }
 
-    if (!this.program) {
-      console.warn("Cannot render before initializing the shader program");
-      return;
-    }
-
     this.gl.enable(this.gl.DEPTH_TEST);
-    this.gl.clearColor(0, 0, 0, 1);
+    this.gl.clearColor(...this.background);
     this.gl.clear(this.gl.COLOR_BUFFER_BIT | this.gl.DEPTH_BUFFER_BIT);
 
     // rotation matrices
@@ -177,11 +215,11 @@ export default class Scene {
 
     let sceneRotation = multiplyMat4(rotY, rotX);
 
+    // NOTE isn't doing this math in js slow?
     // init model-view matrix as identity matrix
     let modelViewMatrix = this.camera.getViewMatrix();
     // get projection from camera
     const projectionMatrix = this.camera.getProjectionMatrix();
-
     // init model transformation matrix as identity matrix
     let modelTransformationMatrix = mat4Identity();
     // object rotation
@@ -189,22 +227,44 @@ export default class Scene {
       modelTransformationMatrix,
       sceneRotation,
     );
-
-    // // camera translation
-    // modelViewMatrix = mat4Translate(modelViewMatrix, [camX, camY, camZ]);
-
+    
     //delta time in ms
     let deltaTime = Date.now() - this.startTime;
 
-    // set time in seconds
-    this.gl.uniform1f(this.timeLoc, deltaTime / 1000.0);
-    this.gl.uniformMatrix4fv(this.uPM, false, projectionMatrix);
-    this.gl.uniformMatrix4fv(this.uMVM, false, modelViewMatrix);
-    this.gl.uniformMatrix4fv(this.uMTM, false, modelTransformationMatrix);
-
     for (let i = 0; i < this.objects.length; i++) {
       const obj = this.objects[i];
-      obj.bindBuffers(this.gl, this.posLoc, this.colorLoc);
+
+      const shaderProgram = this.getProgram(obj.programLabel);
+      if(obj.programLabel != this.activeProgram){
+        shaderProgram.use(this.gl);
+      }
+
+
+
+      // we only need to update these guys on the first loop iteration or on switch
+      if(i == 0 || obj.programLabel != this.activeProgram){
+
+        // set time in seconds
+        if (shaderProgram.timeLoc !== null) {
+          this.gl.uniform1f(shaderProgram.timeLoc, deltaTime / 1000);
+        }
+  
+        if (shaderProgram.uPM !== null) {
+          this.gl.uniformMatrix4fv(shaderProgram.uPM, false, projectionMatrix);
+        }
+        if (shaderProgram.uMVM !== null) {
+          this.gl.uniformMatrix4fv(shaderProgram.uMVM, false, modelViewMatrix);
+        }
+        if (shaderProgram.uMTM !== null) {
+          this.gl.uniformMatrix4fv(
+            shaderProgram.uMTM,
+            false,
+            modelTransformationMatrix,
+          );
+        }
+      }
+
+      obj.bindBuffers(this.gl, shaderProgram.posLoc, shaderProgram.colorLoc);
       obj.draw(this.gl);
     }
   }

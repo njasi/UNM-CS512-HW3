@@ -29,6 +29,11 @@ export const rgba = (r, g, b, a) => [
   a == undefined ? 1 : a,
 ];
 
+export const hex = (hexcode) => {
+  // TODO
+  return [0,0,0,0]
+}
+
 /**
  * Helper function that turns a primitive
  * generator into a SceneObject generator
