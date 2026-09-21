@@ -7,7 +7,11 @@
 // one cylinder or prism crossbar
 // rectangular prism sail
 
-import { generateCylinder, generateFillerColors } from "./primitives";
+import {
+  generateCylinder,
+  generateFillerColors,
+  generateSphere,
+} from "./primitives";
 
 /**
  * Generate a Parametric (kinda) Barrel
@@ -43,11 +47,11 @@ export function generateBarrel(
 
   const bracePositions = [-0.449, -0.2, 0.2, 0.449];
 
-  const mainColors = generateFillerColors(mainVCount, [
-    150 / 255,
-    111 / 255,
-    51 / 255,
-  ]);
+  const mainColors = generateFillerColors(
+    mainVCount,
+    [150 / 255, 111 / 255, 51 / 255, 1],
+    true,
+  );
 
   for (let i = 0; i < bracePositions.length; i++) {
     const brace_z = z_c + bracePositions[i] * h;
@@ -72,14 +76,39 @@ export function generateBarrel(
     mainVert.push(...braceVert);
     mainInd.push(...braceInd.map((n) => n + mainVCount));
     mainVCount += braceVCount;
-    mainColors.push(...generateFillerColors(braceVCount, [0.2, 0.2, 0.2]));
+    mainColors.push(
+      ...generateFillerColors(braceVCount, [0.2, 0.2, 0.2, 1], true),
+    );
   }
 
   return {
     vertices: mainVert,
     colors: mainColors,
     indices: mainInd,
-    vertexCount: mainVert.length / 3,
+    vertexCount: mainVert.length / 4,
     indexCount: mainInd.length,
   };
+}
+
+/**
+ * Generate a cannon object
+ */
+export function generateCannon() {
+  const { vertices: shaftVerts, indices: shaftInds } = generateCylinder(
+    10,
+    1,
+    10,
+  );
+  const { vertices: endVerts, indices: endInds } = generateSphere(10, 1);
+  const { vertices: fuseVerts, indices: fuseInds } = generateCylinder(
+    10,
+    0.2,
+    0.2,
+  );
+
+  // TODO transformations to place the parts
+
+  const bodyVertCount =
+    shaftVerts.length + fuseVerts.length + shaftVerts.length;
+  const canonBodyColors = generateFillerColors(bodyVertCount, [0.2, 0.2, 0.2]);
 }

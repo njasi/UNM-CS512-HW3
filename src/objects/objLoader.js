@@ -9,11 +9,8 @@ const LOADED_OBJECTS = {};
 const toNum = (x) => parseFloat(x);
 
 export async function cacheOBJ(url, id) {
-  console.log(url);
   const response = await fetch(url);
   const text = await response.text();
-
-  console.log(text);
 
   const vertices = [];
   const normals = [];
@@ -56,8 +53,6 @@ export async function cacheOBJ(url, id) {
     vertexCount: vertices.length / 3,
     indexCount: indices.length,
   };
-
-  console.log(LOADED_OBJECTS[id])
 }
 
 export function loadOBJ(id) {

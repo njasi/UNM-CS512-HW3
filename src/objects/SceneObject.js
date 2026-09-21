@@ -74,11 +74,11 @@ export default class SceneObject {
   bindBuffers(gl, posLoc, colorLoc) {
     gl.bindBuffer(gl.ARRAY_BUFFER, this.vbo);
     gl.enableVertexAttribArray(posLoc);
-    gl.vertexAttribPointer(posLoc, 3, gl.FLOAT, false, 0, 0);
+    gl.vertexAttribPointer(posLoc, 4, gl.FLOAT, false, 0, 0);
 
     gl.bindBuffer(gl.ARRAY_BUFFER, this.nbo);
     gl.enableVertexAttribArray(colorLoc);
-    gl.vertexAttribPointer(colorLoc, 3, gl.FLOAT, false, 0, 0);
+    gl.vertexAttribPointer(colorLoc, 4, gl.FLOAT, false, 0, 0);
     gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.ibo);
   }
 

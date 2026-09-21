@@ -57,7 +57,7 @@ export function generateCube() {
  * @param {*} x_c x coord of the center of the cylinder
  * @param {*} y_c y coord of the center of the cylinder
  * @param {*} z_c z coord of the center of the cylinder
- * @returns 
+ * @returns
  */
 export function generateSphere(segments, r, x_c, y_c, z_c) {
   const vertices = [];
@@ -73,7 +73,7 @@ export function generateSphere(segments, r, x_c, y_c, z_c) {
       const vertX = x_c + r * Math.sin(vRad) * Math.sin(uRad);
       const vertY = y_c + r * Math.sin(vRad) * Math.cos(uRad);
 
-      vertices.push(vertX, vertY, vertZ);
+      vertices.push(vertX, vertY, vertZ, 1);
     }
   }
 
@@ -93,7 +93,7 @@ export function generateSphere(segments, r, x_c, y_c, z_c) {
   return {
     vertices: new Float32Array(vertices),
     indices: new Uint16Array(indices),
-    vertexCount: vertices.length / 3,
+    vertexCount: vertices.length / 4,
     indexCount: indices.length,
   };
 }
@@ -107,7 +107,7 @@ export function generateSphere(segments, r, x_c, y_c, z_c) {
  * @param {*} y_c y coord of the center of the cylinder
  * @param {*} z_c z coord of the center of the cylinder
  * @param {*} solid if the bottom of the cone should be closed
- * @returns 
+ * @returns
  */
 export function generateCone(segments, r, h, x_c, y_c, z_c, solid = true) {
   const vertices = [];
@@ -123,7 +123,7 @@ export function generateCone(segments, r, h, x_c, y_c, z_c, solid = true) {
       const vertX = x_c + r * (1 - vFrac) * Math.cos(uRad);
       const vertY = y_c + r * (1 - vFrac) * Math.sin(uRad);
 
-      vertices.push(vertX, vertY, vertZ);
+      vertices.push(vertX, vertY, vertZ, 1);
     }
   }
 
@@ -140,9 +140,9 @@ export function generateCone(segments, r, h, x_c, y_c, z_c, solid = true) {
   }
 
   if (solid) {
-    const bottomCenterIndex = vertices.length / 3;
+    const bottomCenterIndex = vertices.length / 4;
 
-    vertices.push(x_c, y_c, z_c);
+    vertices.push(x_c, y_c, z_c, 1);
 
     for (let u = 0; u < segments; u++) {
       const current = u;
@@ -156,7 +156,7 @@ export function generateCone(segments, r, h, x_c, y_c, z_c, solid = true) {
   return {
     vertices: new Float32Array(vertices),
     indices: new Uint16Array(indices),
-    vertexCount: vertices.length / 3,
+    vertexCount: vertices.length / 4,
     indexCount: indices.length,
   };
 }
@@ -169,7 +169,7 @@ export function generateCone(segments, r, h, x_c, y_c, z_c, solid = true) {
  * @param {*} x_c x coord of the center of the cylinder
  * @param {*} y_c y coord of the center of the cylinder
  * @param {*} z_c z coord of the center of the cylinder
- * @returns 
+ * @returns
  */
 export function generateNGonPrism(n, r, h, x_c, y_c, z_c) {
   return generateCylinder(n, r, h, x_c, y_c, z_c, 0, true, 2);
@@ -186,7 +186,7 @@ export function generateNGonPrism(n, r, h, x_c, y_c, z_c) {
  * @param {*} bulge amount of "bulge" the cylinder should have
  * @param {*} solid if false, do not close the ends of the cylinder
  * @param {*} segments_h, how many divisions there are along the z axis
- * @returns 
+ * @returns
  */
 export function generateCylinder(
   segments,
@@ -216,7 +216,7 @@ export function generateCylinder(
       const vertX = x_c + r * bulgeAmt * Math.cos(uRad);
       const vertY = y_c + r * bulgeAmt * Math.sin(uRad);
 
-      vertices.push(vertX, vertY, vertZ);
+      vertices.push(vertX, vertY, vertZ, 1);
     }
   }
 
@@ -233,9 +233,9 @@ export function generateCylinder(
   }
 
   if (solid) {
-    const bottomCenterIndex = vertices.length / 3;
+    const bottomCenterIndex = vertices.length / 4;
 
-    vertices.push(x_c, y_c, z_c - h / 2);
+    vertices.push(x_c, y_c, z_c - h / 2, 1);
 
     for (let u = 0; u < segments; u++) {
       const current = u;
@@ -244,8 +244,8 @@ export function generateCylinder(
       indices.push(bottomCenterIndex, next, current);
     }
 
-    const topCenterIndex = vertices.length / 3;
-    vertices.push(x_c, y_c, z_c + h / 2);
+    const topCenterIndex = vertices.length / 4;
+    vertices.push(x_c, y_c, z_c + h / 2, 1);
 
     const topStart = segments_h * (segments + 1);
 
@@ -261,7 +261,7 @@ export function generateCylinder(
   return {
     vertices: vertices,
     indices: indices,
-    vertexCount: vertices.length / 3,
+    vertexCount: vertices.length / 4,
     indexCount: indices.length,
   };
 }
@@ -288,7 +288,7 @@ export function generateGrid(segments, size, x_c = 0, y_c = 0, z_c = 0) {
     // iterate side to side
     for (let x = 0; x <= segments; x++) {
       const vertX = (x / segments - 0.5) * size + x_c;
-      vertices.push(vertX, y_c, vertZ);
+      vertices.push(vertX, y_c, vertZ, 1);
     }
   }
 
@@ -311,7 +311,7 @@ export function generateGrid(segments, size, x_c = 0, y_c = 0, z_c = 0) {
   return {
     vertices: new Float32Array(vertices),
     indices: new Uint16Array(indices),
-    vertexCount: vertices.length / 3,
+    vertexCount: vertices.length / 4,
     indexCount: indices.length,
   };
 }
@@ -323,7 +323,11 @@ export function generateGrid(segments, size, x_c = 0, y_c = 0, z_c = 0) {
  * @param {*} alpha
  * @returns number array of colors
  */
-export function generateFillerColors(vertCount, color = undefined, alpha = false) {
+export function generateFillerColors(
+  vertCount,
+  color = undefined,
+  alpha = true,
+) {
   const colors = [];
 
   for (let i = 0; i < vertCount; i++) {

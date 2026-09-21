@@ -1,6 +1,6 @@
 import Scene from "./Scene";
 import Shader from "./Shader";
-import { generateBarrelObject } from "./objects";
+import { generateBarrelObject, generateCylinderObject } from "./objects";
 
 import { cacheOBJ, generateOBJObject } from "./objects/objLoader";
 
@@ -38,7 +38,22 @@ function addBarrel() {
     0.2,
   );
 
-  // scene.addObject(barrel);
+  scene.addObject(barrel);
+  // scene.addObject(
+  //   generateCylinderObject(
+  //     "test",
+  //     undefined,
+  //     10,
+  //     1,
+  //     2.5,
+  //     0,
+  //     0,
+  //     0,
+  //     0.2,
+  //     true,
+  //     10,
+  //   ),
+  // );
 }
 
 // rgba(1, 113, 187)
@@ -114,10 +129,10 @@ let startTime = Date.now();
  * - attach animation loop \
  */
 async function main() {
-  // addBarrel();
+  addBarrel();
 
-  await cacheOBJ("./dist/utah_teapot.obj", "teapot");
-  scene.addObject(generateOBJObject("teapot1", undefined, "teapot"));
+  // await cacheOBJ("./dist/utah_teapot.obj", "teapot");
+  // scene.addObject(generateOBJObject("teapot1", undefined, "teapot"));
 
   await scene.loadShaders();
 
