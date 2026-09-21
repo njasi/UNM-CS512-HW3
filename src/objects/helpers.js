@@ -1,8 +1,6 @@
-import SceneObject from "./SceneObject"
+import SceneObject from "./SceneObject";
 
-import {
-  generateBarrel,
-} from "./compositions";
+import { generateBarrel } from "./compositions";
 
 import {
   generateCone,
@@ -10,8 +8,26 @@ import {
   generateGrid,
   generateNGonPrism,
   generateSphere,
-  generateFillerColors
-} from "./primitives"
+  generateFillerColors,
+} from "./primitives";
+
+/**
+ * Quick helper to translate rbga to webgl rgba
+ *
+ * ie 0-255 => 0-1
+ *
+ * @param {Number} r
+ * @param {Number} g
+ * @param {Number} b
+ * @param {Number} a
+ * @returns
+ */
+export const rgba = (r, g, b, a) => [
+  r / 255,
+  g / 255,
+  b / 255,
+  a == undefined ? 1 : a,
+];
 
 /**
  * Helper function that turns a primitive
@@ -25,7 +41,9 @@ export function makeSceneObjectGenerator(generatePrimitive) {
       ...[...arguments].slice(2),
     );
     const fillerColors =
-      colors == undefined ? generateFillerColors(vertexCount, color, true) : colors;
+      colors == undefined
+        ? generateFillerColors(vertexCount, color, true)
+        : colors;
 
     return new SceneObject(
       objectName,

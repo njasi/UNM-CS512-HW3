@@ -39,21 +39,6 @@ function addBarrel() {
   );
 
   scene.addObject(barrel);
-  // scene.addObject(
-  //   generateCylinderObject(
-  //     "test",
-  //     undefined,
-  //     10,
-  //     1,
-  //     2.5,
-  //     0,
-  //     0,
-  //     0,
-  //     0.2,
-  //     true,
-  //     10,
-  //   ),
-  // );
 }
 
 // rgba(1, 113, 187)
