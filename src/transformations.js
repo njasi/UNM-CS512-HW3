@@ -212,6 +212,37 @@ export function mat4RotateY(matrix, angle) {
   return result;
 }
 
+// Matrix rotation around Z axis
+// did I mess this up? doesnt seem quite right
+export function mat4RotateZ(matrix, angle) {
+  const c = Math.cos(angle);
+  const s = Math.sin(angle);
+  const result = new Float32Array(matrix);
+
+  const mv0 = matrix[0],
+    mv1 = matrix[1],
+    mv2 = matrix[2],
+    mv3 = matrix[3];
+
+  const mv4 = matrix[4],
+    mv5 = matrix[5],
+    mv6 = matrix[6],
+    mv7 = matrix[7];
+
+  result[0] = mv0 * c + mv4 * s;
+  result[1] = mv1 * c + mv5 * s;
+  result[2] = mv2 * c + mv6 * s;
+  result[3] = mv3 * c + mv7 * s;
+
+  result[4] = mv4 * c - mv0 * s;
+  result[5] = mv5 * c - mv1 * s;
+  result[6] = mv6 * c - mv2 * s;
+  result[7] = mv7 * c - mv3 * s;
+
+  return result;
+}
+
+
 /**
  * Apply a transformation matrix to a array of vertices
  *
