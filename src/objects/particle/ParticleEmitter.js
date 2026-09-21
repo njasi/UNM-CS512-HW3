@@ -12,6 +12,9 @@ import SceneObject from "../SceneObject";
  * 
  * might be more reasonable to tack on an emmiter type to the scene but we dont really
  * need to do that...
+ * 
+ * Probably better to define this fully in webgl, seems like something the gpu would
+ * be specialized for...
  */
 export default class ParticleEmitter extends SceneObject{
     constructor(){

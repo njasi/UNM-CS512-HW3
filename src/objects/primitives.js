@@ -177,6 +177,7 @@ export function generateNGonPrism(n, r, h, x_c, y_c, z_c) {
 
 /**
  * Generate a "Cylinder"
+ * 
  * @param {*} segments how many divisions there are
  * @param {*} r radius of the cylinder
  * @param {*} h height of the cylinder
@@ -185,7 +186,7 @@ export function generateNGonPrism(n, r, h, x_c, y_c, z_c) {
  * @param {*} z_c z coord of the center of the cylinder
  * @param {*} bulge amount of "bulge" the cylinder should have
  * @param {*} solid if false, do not close the ends of the cylinder
- * @param {*} segments_h, how many divisions there are along the z axis
+ * @param {*} segments_h default 2 how many divisions there are along the z axis
  * @returns
  */
 export function generateCylinder(
@@ -197,7 +198,7 @@ export function generateCylinder(
   z_c = 0,
   bulge = 0,
   solid = true,
-  segments_h = undefined,
+  segments_h = 2,
 ) {
   const vertices = [];
   const indices = [];

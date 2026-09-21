@@ -1,6 +1,6 @@
 import SceneObject from "./SceneObject";
 
-import { generateBarrel, generateCannon } from "./compositions";
+import { generateBarrel, generateBomb, generateCannon } from "./compositions";
 
 import {
   generateCone,
@@ -64,6 +64,15 @@ export function makeSceneObjectGenerator(generatePrimitive) {
  * @param {*} color the color the object should have
  */
 export const generateCannonObject = makeSceneObjectGenerator(generateCannon);
+
+
+/**
+ * Generate a bomb object
+ * 
+ * @param {*} name the name of the object
+ * @param {*} color the color the object should have
+ */
+export const generateBombObject = makeSceneObjectGenerator(generateBomb);
 
 
 /**

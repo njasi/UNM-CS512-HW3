@@ -242,7 +242,6 @@ export function mat4RotateZ(matrix, angle) {
   return result;
 }
 
-
 /**
  * Apply a transformation matrix to a array of vertices
  *
@@ -273,6 +272,12 @@ export function transformVertices(vertices, matrix) {
   }
 
   return transformed;
+}
+
+export function transformPrimitive(prim, matrix) {
+  const vertsTransformed = transformVertices(prim.vertices, matrix);
+  prim.vertices = vertsTransformed;
+  return prim;
 }
 
 // [optional] Helper function converting math format row-major matrices into a flat column-major array.
