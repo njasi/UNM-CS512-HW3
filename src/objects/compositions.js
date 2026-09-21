@@ -7,10 +7,13 @@
 // one cylinder or prism crossbar
 // rectangular prism sail
 
+import { mat4Identity, mat4RotateY, transformVertices } from "../transformations";
+import { rgba } from "./helpers";
 import {
   generateCylinder,
   generateFillerColors,
   generateSphere,
+  generateTorus,
 } from "./primitives";
 
 /**
@@ -93,22 +96,92 @@ export function generateBarrel(
 /**
  * Generate a cannon object
  */
-export function generateCannon() {
+export function generateCannon(barrelLength = 3) {
   const { vertices: shaftVerts, indices: shaftInds } = generateCylinder(
-    10,
+    20,
     1,
-    10,
+    barrelLength,
+    0,
+    0,
+    -barrelLength / 2,
+    0,
+    true,
+    2,
   );
-  const { vertices: endVerts, indices: endInds } = generateSphere(10, 1);
+  const { vertices: endVerts, indices: endInds } = generateSphere(
+    20,
+    1,
+    0,
+    0,
+    0,
+  );
   const { vertices: fuseVerts, indices: fuseInds } = generateCylinder(
     10,
     0.2,
     0.2,
+    3,
   );
 
+  const {
+    vertices: wheel1Verts,
+    indices: wheel1Inds,
+    vertexCount: wheelVertCount,
+  } = generateTorus(40, 1.15, 0.15, 0, 0, -1.15);
+
+  const { vertices: wheel2Verts, indices: wheel2Inds } = generateTorus(
+    20,
+    1.15,
+    0.15,
+    0,
+    0,
+    1.15,
+  );
+
+  const wheelVerts = [...wheel1Verts, ...wheel2Verts];
+  const wheelInds = [
+    ...wheel1Inds,
+    ...wheel2Inds.map((ind) => ind + wheelVertCount),
+  ];
+
   // TODO transformations to place the parts
+  const id = mat4Identity();
+  const wheelRot = mat4RotateY(id, Math.PI/2);
+  
+  const wheelVertsRotated = transformVertices(wheelVerts, wheelRot)
+
 
   const bodyVertCount =
-    shaftVerts.length + fuseVerts.length + shaftVerts.length;
-  const canonBodyColors = generateFillerColors(bodyVertCount, [0.2, 0.2, 0.2]);
+    (shaftVerts.length + fuseVerts.length + endVerts.length) / 4;
+  const cannonBodyColors = generateFillerColors(
+    bodyVertCount,
+    rgba(34, 34, 34, 1),
+  );
+
+  const wheelsVertCount = wheelVertCount * 2;
+  const wheelColors = generateFillerColors(
+    wheelsVertCount,
+    rgba(150, 111, 51, 1),
+  );
+
+  shaftInds.push(...endInds.map((ind) => ind + shaftVerts.length / 4));
+  shaftVerts.push(...endVerts);
+
+  shaftInds.push(...fuseInds.map((ind) => ind + shaftVerts.length / 4));
+  shaftVerts.push(...fuseVerts);
+
+  console.log(shaftVerts.length, bodyVertCount, cannonBodyColors.length);
+
+  const cannonVerts = [...shaftVerts, ...wheelVertsRotated];
+  const cannonInds = [
+    ...shaftInds,
+    ...wheelInds.map((ind) => ind + shaftVerts.length / 4),
+  ];
+  const cannonColors = [...cannonBodyColors, ...wheelColors];
+
+  return {
+    vertices: cannonVerts,
+    indices: cannonInds,
+    colors: cannonColors,
+    vertexCount: shaftVerts.length / 4,
+  };
 }

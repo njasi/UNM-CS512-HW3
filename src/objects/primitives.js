@@ -91,8 +91,8 @@ export function generateSphere(segments, r, x_c, y_c, z_c) {
 
   // package it for the buffers
   return {
-    vertices: new Float32Array(vertices),
-    indices: new Uint16Array(indices),
+    vertices: vertices,
+    indices: indices,
     vertexCount: vertices.length / 4,
     indexCount: indices.length,
   };
@@ -154,8 +154,8 @@ export function generateCone(segments, r, h, x_c, y_c, z_c, solid = true) {
 
   // package it for the buffers
   return {
-    vertices: new Float32Array(vertices),
-    indices: new Uint16Array(indices),
+    vertices: vertices,
+    indices: indices,
     vertexCount: vertices.length / 4,
     indexCount: indices.length,
   };
@@ -192,9 +192,9 @@ export function generateCylinder(
   segments,
   r,
   h,
-  x_c,
-  y_c,
-  z_c,
+  x_c = 0,
+  y_c = 0,
+  z_c = 0,
   bulge = 0,
   solid = true,
   segments_h = undefined,
@@ -266,8 +266,58 @@ export function generateCylinder(
   };
 }
 
-export function generateTorus() {
-  // TODO
+/**
+ * Generate a torus
+ * 
+ * 
+ * Torus/Donut
+  x = (R + r cos v)cos u
+  y = (R + r cos v)sin u
+  z = r sin v
+ * @param {*} segments how many divisions there are
+ * @param {*} r the radius of the sphere
+ * @param {*} x_c x coord of the center of the torus
+ * @param {*} y_c y coord of the center of the torus
+ * @param {*} z_c z coord of the center of the torus
+ * @returns
+ */
+export function generateTorus(segments, R, r, x_c, y_c, z_c) {
+  const vertices = [];
+  const indices = [];
+
+  for (let v = 0; v <= segments; v++) {
+    const vRad = (2 * Math.PI * v) / segments;
+
+    const vertZ = z_c + r * Math.sin(vRad);
+    for (let u = 0; u <= segments; u++) {
+      const uRad = (2 * Math.PI * u) / segments;
+
+      const vertX = x_c + (R + r * Math.cos(vRad)) * Math.cos(uRad);
+      const vertY = y_c + (R + r * Math.cos(vRad)) * Math.sin(uRad);
+
+      vertices.push(vertX, vertY, vertZ, 1);
+    }
+  }
+
+  for (let v = 0; v < segments; v++) {
+    for (let u = 0; u < segments; u++) {
+      const i_0 = v * (segments + 1) + u;
+      const i_1 = i_0 + 1;
+      const i_2 = i_0 + segments + 1;
+      const i_3 = i_2 + 1;
+
+      // push the two triangle faces
+      indices.push(i_0, i_2, i_1, i_1, i_2, i_3);
+    }
+  }
+
+  // package it for the buffers
+  return {
+    vertices: vertices,
+    indices: indices,
+    vertexCount: vertices.length / 4,
+    indexCount: indices.length,
+  };
 }
 
 /**

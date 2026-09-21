@@ -1,6 +1,6 @@
 import SceneObject from "./SceneObject";
 
-import { generateBarrel } from "./compositions";
+import { generateBarrel, generateCannon } from "./compositions";
 
 import {
   generateCone,
@@ -53,6 +53,18 @@ export function makeSceneObjectGenerator(generatePrimitive) {
     );
   };
 }
+
+
+/**
+ * Generate a cannon object
+ * 
+ * TODO cannon is more complicated since it has parts
+ *      unless we make the whole things one part
+ * @param {*} name the name of the object
+ * @param {*} color the color the object should have
+ */
+export const generateCannonObject = makeSceneObjectGenerator(generateCannon);
+
 
 /**
  * Generate a Parametric (kinda) Barrel

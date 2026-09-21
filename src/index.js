@@ -1,6 +1,6 @@
 import Scene from "./Scene";
 import Shader from "./Shader";
-import { generateBarrelObject, generateCylinderObject } from "./objects";
+import { generateBarrelObject, generateCannonObject, generateCylinderObject } from "./objects";
 
 import { cacheOBJ, generateOBJObject } from "./objects/objLoader";
 
@@ -26,19 +26,24 @@ scene.shaders.push(
 
 function addBarrel() {
   // // generate a primitive
-  const barrel = generateBarrelObject(
-    "barrel",
-    undefined,
-    20,
-    1,
-    2.5,
-    0,
-    0,
-    0,
-    0.2,
-  );
+  // const barrel = generateBarrelObject(
+  //   "barrel",
+  //   undefined,
+  //   20,
+  //   1,
+  //   2.5,
+  //   0,
+  //   0,
+  //   0,
+  //   0.2,
+  // );
 
-  scene.addObject(barrel);
+  // scene.addObject(barrel);
+
+  const cannon = generateCannonObject("cannon", undefined);
+  scene.addObject(cannon);
+
+  console.log(scene.objects)
 }
 
 // rgba(1, 113, 187)
