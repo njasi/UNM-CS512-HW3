@@ -70,8 +70,6 @@ function fireCannon() {
     undefined,
   );
 
-  bomb.loadBuffers(scene.gl)
-
   scene.addObject(bomb, "basic");
 
   console.log("fired" , bomb)

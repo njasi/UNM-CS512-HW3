@@ -152,7 +152,10 @@ export default class Scene {
 
   /**
    * Add an object to the scene
-   * TODO probably some binding needed?
+   * 
+   * - need an additional call to SceneObject.loadBuffers
+   *   when adding, not sure if that is something 
+   *   that should live in here though. Added for now
    */
   addObject(obj, programLabel = obj.programLabel) {
     if (!programLabel) {
@@ -163,6 +166,7 @@ export default class Scene {
 
     obj.programLabel = programLabel;
     this.objects.push(obj);
+    obj.loadBuffers(this.gl)
   }
 
   /**
