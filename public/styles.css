@@ -22,7 +22,6 @@ body {
   line-height: 1.5;
 }
 
-
 textarea {
   background: var(--surface);
   color: var(--accent);
@@ -31,8 +30,20 @@ textarea {
   height: 250px;
 }
 
+.shader-editors textarea{
+  width:100%;
+  max-width:100%;
+}
+
+.shader-editors {
+  margin-top: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
 canvas {
-  border: 1px solid #444;
+  border: 2px solid #444;
 }
 
 main {
@@ -88,7 +99,6 @@ a:hover {
   border: 1px solid var(--border);
   border-radius: 8px;
   box-shadow: 0 8px 8px rgb(0 0 0 / 15%);
-
 
   transition:
     background 180ms ease,

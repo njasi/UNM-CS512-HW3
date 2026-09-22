@@ -31,7 +31,8 @@ export default class Scene {
     this.rotationX = 0;
     this.rotationY = 0;
 
-    this.camera = new Camera(this.canvas.height / this.canvas.width);
+    // corrected aspect, should keep things looking 1:1
+    this.camera = new Camera( this.canvas.width / this.canvas.height)
 
     // object rotation
     this.rotationX;

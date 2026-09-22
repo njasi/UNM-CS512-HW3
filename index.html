@@ -4,35 +4,99 @@
     <meta charset="utf-8" />
     <title>UNM CS 512 HW3</title>
     <!-- load styles from the main site if we online -->
-    <link href="/styles.css" rel="stylesheet" />
+    <link href="./public/styles.css" rel="stylesheet" />
+    <link href="./public/cannon.css" rel="stylesheet" />
 
     <!-- TODO should webpack all these files together -->
     <script defer src="./dist/bundle.js"></script>
   </head>
 
   <body>
+    <h1>HW 3: Interactive Controls & Geometric Primitives</h1>
     <main>
-      <h2>Interactive Controls & Geometric Primitives</h2>
-      <p>
-        Edit vertex and fragment shaders on the left to get the result instantly.<br />
+      <!-- <h2>Interactive Controls & Geometric Primitives</h2> -->
+      <!-- <p>
+        Edit vertex and fragment shaders on the left to get the result
+        instantly.<br />
         Use mouse to drag and rotate the cube. <br />
         Use arrow keys and w, s keys to move the camera.<br />
         Press F12 to see the console for debugging.
-      </p>
+      </p> -->
 
-      <div style="display: flex; gap: 10px; align-items: flex-start">
-        <div style="display: flex; flex-direction: column; gap: 10px">
-          <div>
-            <b>Vertex Shader</b><br />
-            <textarea id="vertEditor"></textarea>
+      <div style="display: flex; justify-content: center">
+        <div class="cannon-wooden-border">
+          <div class="cannon-controls control-panel control-panel-small">
+            <h2>Cannon Minigame <br /></h2>
           </div>
-          <div>
-            <b>Fragment Shader</b><br />
-            <textarea id="fragEditor"></textarea>
+
+          <canvas id="glcanvas" width="800" height="450"></canvas>
+          <div class="cannon-controls">
+            <div class="control-panel control-panel-main">
+              <label class="slider-control">
+                <span>
+                  <strong>Elevation</strong>
+                  <output id="elevation-value">45°</output>
+                </span>
+
+                <input
+                  id="elevation"
+                  type="range"
+                  min="0"
+                  max="90"
+                  value="45"
+                  class="metal-slider elevation-slider"
+                />
+              </label>
+
+              <label class="slider-control">
+                <span>
+                  <strong>Left / Right</strong>
+                  <output id="direction-value">0°</output>
+                </span>
+
+                <input
+                  id="direction"
+                  type="range"
+                  min="-180"
+                  max="180"
+                  value="0"
+                  class="metal-slider direction-slider"
+                />
+              </label>
+
+              <label class="slider-control power-control">
+                <span>
+                  <strong>Power</strong>
+                  <output id="power-value">50%</output>
+                </span>
+
+                <input
+                  id="power"
+                  type="range"
+                  min="0"
+                  max="100"
+                  value="50"
+                  class="power-slider"
+                />
+              </label>
+            </div>
+            <div class="control-panel control-panel-fire">
+              <button id="fire-button" class="fire-button" type="button">
+                <span class="fire-button-label">FIRE</span>
+              </button>
+            </div>
           </div>
         </div>
+      </div>
+
+      <div class="shader-editors">
         <div>
-          <canvas id="glcanvas" width="800" height="800"></canvas>
+          <b>Vertex Shader</b><br />
+          <textarea id="vertEditor"></textarea>
+        </div>
+        <div>
+          <b>Fragment Shader</b><br />
+          <textarea id="fragEditor"></textarea>
         </div>
       </div>
     </main>
