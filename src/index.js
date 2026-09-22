@@ -72,7 +72,7 @@ function fireCannon() {
 
   scene.addObject(bomb, "basic");
 
-  console.log("fired" , bomb)
+  console.log("fired", bomb);
 }
 
 function addBarrel() {
@@ -165,15 +165,19 @@ function setupKeyboardControls() {
       case "s":
         scene.camera.move(0, 0, -step);
         break;
-
-      case "f":
-        fireCannon();
-        break;
     }
   });
 }
 
-let startTime = Date.now();
+/**
+ * Attach event listeners to the html elements
+ * ie sliders & fire button
+ */
+function setupInputControls() {
+  document.getElementById("fire-button").addEventListener("mousedown", () => {
+    fireCannon();
+  });
+}
 
 /**
  * Main init function
@@ -210,6 +214,7 @@ async function main() {
 
   setupMouseControls();
   setupKeyboardControls();
+  setupInputControls();
 
   // Initialize when page loads
   // dont need onload since we defer this script

@@ -305,19 +305,6 @@ output {
     filter 120ms ease;
 }
 
-.fire-button-label {
-  position: relative;
-  z-index: 1;
-  color: var(--text-light-gold);
-  font-family: Georgia, serif;
-  font-size: 1.25rem;
-  font-weight: bold;
-  letter-spacing: 0.12em;
-  text-shadow:
-    2px 2px var(--fire-text-shadow),
-    0 0 5px #fff5;
-}
-
 .fire-button:hover {
   filter: brightness(1.3);
 }
