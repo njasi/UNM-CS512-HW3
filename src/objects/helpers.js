@@ -170,3 +170,11 @@ export const generateGridObject = makeSceneObjectGenerator(generateGrid);
  */
 export const generateNGonPrismObject =
   makeSceneObjectGenerator(generateNGonPrism);
+
+/**
+ * Calculate the center of mass of an object given its vertices
+ * @param {*} vertices 
+ */
+export function calculateCenterOfMass(vertices){
+  // TODO
+}

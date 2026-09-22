@@ -18,6 +18,10 @@ export default class Scene {
     this.lights = [];
     this.shaders = [];
     this.background = rgba(64, 112, 255, 1);
+
+    // start time and time elapsed
+    this.startTime = Date.now()
+    this.time = 0;
     
     // use to check if we actually need to switch shaders...
     this.activeProgram = undefined;
@@ -196,6 +200,16 @@ export default class Scene {
    * Render the scene
    */
   render() {
+    const nextTime = Date.now() - this.startTime;
+
+    const dt = nextTime - this.time;
+    this.update(dt / 1000)
+
+    this.time = nextTime
+
+    // delta time since start in ms
+
+
     if (!this.gl) {
       console.error("Scene has no WebGL context");
       return;
@@ -227,9 +241,6 @@ export default class Scene {
       modelTransformationMatrix,
       sceneRotation,
     );
-    
-    //delta time in ms
-    let deltaTime = Date.now() - this.startTime;
 
     for (let i = 0; i < this.objects.length; i++) {
       const obj = this.objects[i];
@@ -246,7 +257,7 @@ export default class Scene {
 
         // set time in seconds
         if (shaderProgram.timeLoc !== null) {
-          this.gl.uniform1f(shaderProgram.timeLoc, deltaTime / 1000);
+          this.gl.uniform1f(shaderProgram.timeLoc, this.time / 1000);
         }
   
         if (shaderProgram.uPM !== null) {

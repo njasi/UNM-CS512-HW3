@@ -1,6 +1,15 @@
 import Scene from "./Scene";
 import Shader from "./Shader";
-import { generateBarrelObject, generateBombObject, generateCannonObject, generateCylinderObject, generateGridObject, rgba } from "./objects";
+import {
+  generateBarrelObject,
+  generateBombObject,
+  generateCannonObject,
+  generateCylinderObject,
+  generateGridObject,
+  rgba,
+} from "./objects";
+import { PhysicsObject } from "./objects/PhysicsObject";
+import { generateBomb } from "./objects/compositions";
 
 import { cacheOBJ, generateOBJObject } from "./objects/objLoader";
 
@@ -12,7 +21,12 @@ const fragEditor = document.getElementById("fragEditor");
 const scene = new Scene("glcanvas");
 
 scene.addShader(
-  new Shader("basicVertex", scene.gl.VERTEX_SHADER, "", "./src/shaders/vertex.vert"),
+  new Shader(
+    "basicVertex",
+    scene.gl.VERTEX_SHADER,
+    "",
+    "./src/shaders/vertex.vert",
+  ),
 );
 
 scene.addShader(
@@ -23,6 +37,45 @@ scene.addShader(
     "./src/shaders/fragment.frag",
   ),
 );
+
+function fireCannon() {
+  // check strength, x,y sliders
+
+  const bombPrim = generateBomb(0.5);
+
+  // TODO do some calculation to get the position of the end of the cannon barrel
+  const position = [0, 0, 0, 0];
+
+  // TODO make random
+  const rotation = [0, 0, 0, 0];
+  const rotVelocity = [0, 0, 0, 0];
+
+  // TODO calculate unit vector from the cannon angle
+  //      and then scale based on the power slider
+  const velocity = [0, 0.1, 0.1, 0];
+
+  const bomb = new PhysicsObject(
+    "bomb" + Date.now(),
+    new Float32Array(bombPrim.vertices),
+    new Float32Array(bombPrim.colors),
+    new Uint16Array(bombPrim.indices),
+    undefined,
+    position,
+    rotation,
+    velocity,
+    rotVelocity,
+    0,
+    0.5,
+    true,
+    undefined,
+  );
+
+  bomb.loadBuffers(scene.gl)
+
+  scene.addObject(bomb, "basic");
+
+  console.log("fired" , bomb)
+}
 
 function addBarrel() {
   // generate a primitive
@@ -41,15 +94,18 @@ function addBarrel() {
   scene.addObject(barrel, "basic");
 
   // add water
-  scene.addObject(generateGridObject("water", rgba(1,86,239), 100, 40), "basic")
-  
+  scene.addObject(
+    generateGridObject("water", rgba(1, 86, 239), 100, 40),
+    "basic",
+  );
+
   // watercolor =>  rgba(1, 86, 239)
   // const cannon = generateCannonObject("cannon", undefined);
   // scene.addObject(cannon, "basic");
   // const bomb = generateBombObject("bomb", undefined, 1);
   // scene.addObject(bomb, "basic");
 
-  console.log(scene.objects)
+  console.log(scene.objects);
 }
 
 // rgba(1, 113, 187)
@@ -111,6 +167,10 @@ function setupKeyboardControls() {
       case "s":
         scene.camera.move(0, 0, -step);
         break;
+
+      case "f":
+        fireCannon();
+        break;
     }
   });
 }
@@ -125,19 +185,14 @@ let startTime = Date.now();
  * - attach animation loop \
  */
 async function main() {
-  
   // await cacheOBJ("./dist/utah_teapot.obj", "teapot");
   // scene.addObject(generateOBJObject("teapot1", undefined, "teapot"));
-  
+
   await scene.loadShaders();
-  
-  scene.addProgram(
-    "basic",
-    "basicVertex",
-    "basicFragment",
-  );
-  
-  addBarrel();
+
+  scene.addProgram("basic", "basicVertex", "basicFragment");
+
+  // addBarrel();
 
   // this is kinda annoying, maybe i move them to a map
   const vertexShader = scene.shaders.find(
