@@ -59,7 +59,7 @@ mat4 rotate3DY(float angle){
         0.0, 1.0, 0.0, 0.0,
         sin(angle), 0.0, cos(angle), 0.0,
         0.0, 0.0, 0.0, 1.0
-    )
+    );
 }
 
 // rotate around the z axis
@@ -77,7 +77,7 @@ mat4 rotate3DZ(float angle){
 mat4 rotate3D(float ax, float ay, float az){
     // TODO could probaby make more efficient by writing out the whole matrix
     //      but tbh thats what the X,Y,Z specific rotations are for anyway
-    return rotate3DX(ax) * rotate3DY(ay) * rotate3DZ(az)
+    return rotate3DX(ax) * rotate3DY(ay) * rotate3DZ(az);
 }
 
 // create a 2d shear matrix
@@ -129,19 +129,6 @@ mat4 translate3D(float tx, float ty, float tz){
         tx, ty, tz, 1.0
     );
 }
-
-
-
-///
-
-
-
-
-
-
-
-
-
 
 void main() {
   gl_Position = uProjectionMatrix * uModelViewMatrix * uModelTransformationMatrix * vec4(aPosition, 1.0f);
