@@ -42,7 +42,7 @@ scene.addShader(
 let cannonConfig = {
   elevation: 45,
   yaw: 0,
-  power: 0,
+  power: 50,
 };
 
 function updateCannon() {
@@ -63,9 +63,9 @@ function fireCannon() {
   const pitR = (cannonConfig.elevation / 180) * Math.PI;
 
   const cannonLook = [
-    0,
+    -Math.sin(yawR),
     Math.sin(pitR),
-    -Math.cos(pitR),
+    -Math.cos(pitR) * Math.cos(yawR),
     0,
   ];
 
@@ -91,7 +91,7 @@ function fireCannon() {
 
   // TODO calculate unit vector from the cannon angle
   //      and then scale based on the power slider
-  const velocity = scaleVec4(cannonLook, 20);
+  const velocity = scaleVec4(cannonLook, cannonConfig.power/4);
 
   const bomb = new PhysicsObject(
     "bomb" + Date.now(),
