@@ -169,33 +169,41 @@ function fireCannon() {
     9.81,
     0.5,
     true,
-    () => {
+    (bomb, other) => {
       // TODO explosion?
       scene.removeObject(bomb.label)
+      scene.removeObject(other.label)
+
+      if(other.label.startsWith("barrel")){
+        // todo increase score or something idk
+        addRandomBarrel()
+      }
     },
   );
 
   scene.addObject(bomb, "basic");
 }
 
+let barrelCount = 0;
 function addRandomBarrel() {
   const barrelPrim = generateBarrel(20, 1, 2.5, 0, 0, 0, 0.2);
 
   const velocity = [
     Math.random() * 10 - 5,
-    Math.random() * 10 - 5,
+    Math.random() * 30,
     Math.random() * 10 - 5,
   ];
   const rotVelocity = [Math.random(), Math.random(), Math.random()];
   const position = [
     Math.random() * 50 - 25,
-    Math.random() * 20,
+    Math.random() * -20,
     Math.random() * -20 - 15,
   ];
   const rotation = [Math.PI / 2, 0, 0];
 
+  barrelCount++;
   const barrel = new FloatingObject(
-    "barrel" + Date.now(),
+    "barrel" + barrelCount,
     new Float32Array(barrelPrim.vertices),
     new Float32Array(barrelPrim.colors),
     new Uint16Array(barrelPrim.indices),
@@ -206,15 +214,8 @@ function addRandomBarrel() {
     rotVelocity,
   );
 
+
   barrel.hitboxRadius = 1.5;
-  barrel.onCollision = (barrel, other) => {
-    // just another barrel ignore it
-    if(other.label.startsWith("barrel")){
-      return
-    }
-    scene.removeObject(barrel.label);
-    addRandomBarrel();
-  };
   barrel.waterFunction = (pos, time) => 0.4 * Math.sin(time);
 
   scene.addObject(barrel, "basic");
@@ -226,7 +227,7 @@ function initSceneObjects() {
   }
   // add water
   scene.addObject(
-    generateGridObject("water", rgba(1, 86, 239), 100, 100),
+    generateGridObject("water", rgba(1, 86, 239), 20, 200),
     "water",
   );
 
