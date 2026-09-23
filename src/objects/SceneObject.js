@@ -36,6 +36,7 @@ export default class SceneObject {
 
     this.position = [0, 0, 0];
     this.rotation = [0, 0, 0];
+    this.scale = [1, 1, 1];
 
     // attached in scene
     this.programLabel;
@@ -98,6 +99,7 @@ export default class SceneObject {
     const shader = scene.getProgram(this.programLabel);
     this.uPosLoc = scene.gl.getUniformLocation(shader.program, "uPosition");
     this.uRotLoc = scene.gl.getUniformLocation(shader.program, "uRotation");
+    this.uScaleLoc = scene.gl.getUniformLocation(shader.program, "uScale");
   }
 
   /**
@@ -117,6 +119,12 @@ export default class SceneObject {
       this.rotation[0],
       this.rotation[1],
       this.rotation[2],
+    );
+    gl.uniform3f(
+      this.uScaleLoc,
+      this.scale[0],
+      this.scale[1],
+      this.scale[2],
     );
     // draw the object by the index order
     gl.drawElements(gl.TRIANGLES, this.indices.length, gl.UNSIGNED_SHORT, 0);

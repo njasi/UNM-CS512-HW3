@@ -12,6 +12,7 @@ uniform mat4 uModelTransformationMatrix;
 // translation matrix
 uniform vec3 uPosition; 
 uniform vec3 uRotation;
+uniform vec3 uScale;
 
 out vec3 vColor;
 
@@ -154,7 +155,8 @@ mat4 translate3D(float tx, float ty, float tz){
 void main() {
   mat4 T = translate3D(uPosition.x, uPosition.y, uPosition.z);
   mat4 R = rotate3D(uRotation.x, uRotation.y, uRotation.z);
+  mat4 S = scaling3D(uScale.x, uScale.y, uScale.z);
 
-  gl_Position = uProjectionMatrix * uModelViewMatrix * uModelTransformationMatrix * T * R * vec4(aPosition, 1.0f);
+  gl_Position = uProjectionMatrix * uModelViewMatrix * uModelTransformationMatrix * T * R * S * vec4(aPosition, 1.0f);
   vColor = aColor;
 }

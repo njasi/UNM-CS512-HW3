@@ -52,13 +52,47 @@ function updateCannon() {
   cannon.rotation[1] = (cannonConfig.yaw / 180) * Math.PI;
 }
 
+function cannonCooldown(lookVector) {
+  const button = document.getElementById("fire-button");
+  const cannon = scene.getObject("cannon");
+
+  if(button.disabled){
+    return true
+  }
+
+  button.disabled = true;
+
+  const startTime = scene.time;
+  // TODO: should really set the update function on the cannon object
+  const cooldownInter = setInterval(() => {
+    const dt = scene.time - startTime;
+    const shift = Math.sin(dt/200 * Math.PI)
+
+    
+    cannon.scale[0] = 1 + 0.1 * shift;
+    cannon.scale[1] = 1 + 0.1 * shift;
+    cannon.scale[2] = 1 + 0.1 * shift;
+
+    cannon.position[0] = 0.5 * shift * -lookVector[0];
+    cannon.position[2] = 0.5 * shift * -lookVector[2];
+
+    if (dt > 200) {
+      cannon.scale = [1, 1, 1];
+      cannon.position[0] = 0; 
+      cannon.position[2] = 0; 
+      clearInterval(cooldownInter);
+      button.disabled = false;
+    }
+  }, 30);
+
+  return false
+}
+
 /**
  * Create a bomb and launch it out of the cannon barrel
  * according to the cannonConfig settings from the sliders
  */
 function fireCannon() {
-  const bombPrim = generateBomb(0.5);
-
   const yawR = (cannonConfig.yaw / 180) * Math.PI;
   const pitR = (cannonConfig.elevation / 180) * Math.PI;
 
@@ -69,13 +103,16 @@ function fireCannon() {
     0,
   ];
 
-  console.log(cannonLook);
+  if(cannonCooldown(cannonLook)){
+    return 
+  }
 
-  // TODO do some calculation to get the position of the end of the cannon barrel
+  const bombPrim = generateBomb(0.5);
+
+
   const position = scaleVec4(cannonLook, 3);
   position[1] += 1.25;
 
-  // TODO make random
   const rotation = [
     Math.random() * 2 * Math.PI,
     Math.random() * 2 * Math.PI,
@@ -89,9 +126,9 @@ function fireCannon() {
     0,
   ];
 
-  // TODO calculate unit vector from the cannon angle
-  //      and then scale based on the power slider
-  const velocity = scaleVec4(cannonLook, cannonConfig.power/4);
+  // calculate unit vector from the cannon angle
+  // and then scale based on the power slider
+  const velocity = scaleVec4(cannonLook, cannonConfig.power / 4);
 
   const bomb = new PhysicsObject(
     "bomb" + Date.now(),
@@ -107,6 +144,7 @@ function fireCannon() {
     0.5,
     true,
     () => {
+      // TODO real collision handler lol
       console.log("collided");
     },
   );
