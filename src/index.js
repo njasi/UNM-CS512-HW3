@@ -124,7 +124,7 @@ function fireCannon() {
   const bombPrim = generateBomb(0.5);
 
   const position = scaleVec4(cannonLook, 3);
-  position[1] += 1.25;
+  position[1] += 1.75;
 
   // random rotation and velocuty
   // NOTE: z rotation looks a lil wonky maybe
@@ -189,9 +189,25 @@ function initSceneObjects() {
     "basic",
   );
 
+  // pillar for cannon to sit on
+  const pillar = generateCylinderObject(
+    "pillar",
+    rgba(78, 75, 73, 1),
+    32,
+    2.5,
+    2,
+    0,
+    0,
+    0,
+  );
+  pillar.rotation[0] = Math.PI/2
+  pillar.position[1] = -.5
+  scene.addObject(pillar, "basic")
+
+
   // watercolor =>  rgba(1, 86, 239)
   const cannon = generateCannonObject("cannon", undefined);
-  cannon.position[1] = 1.25;
+  cannon.position[1] = 1.8;
   cannon.rotation[0] = Math.PI / 4;
   scene.addObject(cannon, "basic");
 }
