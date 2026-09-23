@@ -41,7 +41,7 @@ export class FloatingObject extends PhysicsObject {
     collidable = true,
     onCollision = undefined,
     buoyancy = 15,
-    waterFriction = 0.999,
+    waterFriction = 0.99,
     waterFunction = undefined,
   ) {
     super(
@@ -102,8 +102,11 @@ export class FloatingObject extends PhysicsObject {
       this.position[1] - waterY < this.hitboxRadius
     ) {
       // again another big simplification but should look meh
-      this.velocity[0] *= Math.pow(this.waterFriction, dt);
-      this.velocity[2] *= Math.pow(this.waterFriction, dt);
+      const damper = Math.pow(this.waterFriction, dt * 1000/30)
+      console.log("damping by", damper)
+      this.velocity[0] *= damper;
+      this.velocity[1] *= damper;
+      this.velocity[2] *= damper;
     }
   }
 }
