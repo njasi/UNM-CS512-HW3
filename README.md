@@ -22,9 +22,9 @@ In this assignment, you will extend the provided hw3.zip below to build your int
 
 - [x] Define at least two additional geometric primitives (e.g. prism, **cylinder**, **cone**, **sphere**, torus, etc.) and add them into the scene. The more you can do here, the less work needed in the future assignments. (2 pts)
 
-- [ ] Create at least two UI components (e.g. buttons, sliders, or menus, etc.) to trigger events such as selecting objects, changing rotation directions, applying different motions, or inserting new objects, etc. (2 pts)
+- [x] Create at least two UI components (e.g. buttons, sliders, or menus, etc.) to trigger events such as selecting objects, changing rotation directions, applying different motions, or inserting new objects, etc. (2 pts)
 
-- [ ] Apply motions to the objects. There have to be at least three different types of transformations from translation, rotation, scaling, shearing/skewing, mirroring/reflection, etc. (3 pts)
+- [2/3] Apply motions to the objects. There have to be at least three different types of transformations from **translation**, **rotation**, scaling, shearing/skewing, mirroring/reflection, etc. (3 pts)
 
 - [ ] Outstanding effects and creativities will get 1 bonus points.
 

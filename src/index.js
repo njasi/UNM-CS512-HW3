@@ -132,7 +132,7 @@ function initSceneObjects() {
 
   // add water
   scene.addObject(
-    generateGridObject("water", rgba(1, 86, 239), 100, 40),
+    generateGridObject("water", rgba(1, 86, 239), 100, 100),
     "basic",
   );
 
