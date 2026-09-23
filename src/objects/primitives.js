@@ -59,7 +59,7 @@ export function generateCube() {
  * @param {*} z_c z coord of the center of the cylinder
  * @returns
  */
-export function generateSphere(segments, r, x_c, y_c, z_c) {
+export function generateSphere(segments, r, x_c = 0, y_c = 0, z_c = 0) {
   const vertices = [];
   const indices = [];
 
@@ -177,7 +177,7 @@ export function generateNGonPrism(n, r, h, x_c, y_c, z_c) {
 
 /**
  * Generate a "Cylinder"
- * 
+ *
  * @param {*} segments how many divisions there are
  * @param {*} r radius of the cylinder
  * @param {*} h height of the cylinder
