@@ -67,7 +67,9 @@ function fireCannon() {
     9.81,
     0.5,
     true,
-    undefined,
+    () => {
+      console.log("collided")
+    },
   );
 
   scene.addObject(bomb, "basic");

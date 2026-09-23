@@ -58,19 +58,6 @@ export class PhysicsObject extends SceneObject {
     this.rotation = sumVec4(this.rotation, scaleVec4(this.rotVelocity, dt));
     this.velocity[1] -= this.gravity * dt;
 
-    scene.gl.uniform3f(
-      this.uPosLoc,
-      this.position[0],
-      this.position[1],
-      this.position[2],
-    );
-    scene.gl.uniform3f(
-      this.uRotLoc,
-      this.rotation[0],
-      this.rotation[1],
-      this.rotation[2],
-    );
-
     // collisions, only do if collidable and has an oncollision
     // NOTE: for now we do big dummy collision with hitbox spheres at the positions
     //       of the objects, which we assume will be at the center of the object
@@ -84,7 +71,7 @@ export class PhysicsObject extends SceneObject {
         const testobj = scene.objects[i];
 
         // if not physics object or not collidable physics
-        if (!testobj.collidable) {
+        if (!testobj.collidable || testobj.label == this.label) {
           continue;
         }
 
@@ -97,5 +84,28 @@ export class PhysicsObject extends SceneObject {
         }
       }
     }
+  }
+
+  /**
+   * Draw a physics object onto the canvas
+   * additionally binds position and rotation matrices
+   *
+   * @param {*} gl the webgl2 context from canvas
+   */
+  draw(gl) {
+    gl.uniform3f(
+      this.uPosLoc,
+      this.position[0],
+      this.position[1],
+      this.position[2],
+    );
+    gl.uniform3f(
+      this.uRotLoc,
+      this.rotation[0],
+      this.rotation[1],
+      this.rotation[2],
+    );
+
+    super.draw(gl);
   }
 }
