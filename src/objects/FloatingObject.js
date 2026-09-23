@@ -107,6 +107,9 @@ export class FloatingObject extends PhysicsObject {
       this.velocity[0] *= damper;
       this.velocity[1] *= damper;
       this.velocity[2] *= damper;
+      this.rotVelocity[0] *= damper;
+      this.rotVelocity[1] *= damper;
+      this.rotVelocity[2] *= damper;
     }
   }
 }

@@ -21,7 +21,8 @@ const fragEditor = document.getElementById("fragEditor");
 
 // try to plug in new scene abstraction
 const scene = new Scene("glcanvas");
-scene.camera.move(0, -2.5, -5);
+scene.camera.move(0, -2.5, -25);
+scene.rotationX += Math.PI / 6;
 
 scene.addShader(
   new Shader(
@@ -169,8 +170,8 @@ function fireCannon() {
     0.5,
     true,
     () => {
-      // TODO real collision handler lol
-      console.log("collided");
+      // TODO explosion?
+      scene.removeObject(bomb.label)
     },
   );
 
@@ -180,12 +181,16 @@ function fireCannon() {
 function addRandomBarrel() {
   const barrelPrim = generateBarrel(20, 1, 2.5, 0, 0, 0, 0.2);
 
-  const velocity = [0, 0, 0];
-  const rotVelocity = [0, 0, 0];
+  const velocity = [
+    Math.random() * 10 - 5,
+    Math.random() * 10 - 5,
+    Math.random() * 10 - 5,
+  ];
+  const rotVelocity = [Math.random(), Math.random(), Math.random()];
   const position = [
-    5, // Math.random() * 20 - 10,
-    5, // Math.random() * 20,
-    -5,// Math.random() * -10,
+    Math.random() * 50 - 25,
+    Math.random() * 20,
+    Math.random() * -20 - 15,
   ];
   const rotation = [Math.PI / 2, 0, 0];
 
@@ -202,7 +207,11 @@ function addRandomBarrel() {
   );
 
   barrel.hitboxRadius = 1.5;
-  barrel.onCollision = () => {
+  barrel.onCollision = (barrel, other) => {
+    // just another barrel ignore it
+    if(other.label.startsWith("barrel")){
+      return
+    }
     scene.removeObject(barrel.label);
     addRandomBarrel();
   };
@@ -212,7 +221,9 @@ function addRandomBarrel() {
 }
 
 function initSceneObjects() {
-  addRandomBarrel();
+  for (let i = 0; i < 10; i++) {
+    addRandomBarrel();
+  }
   // add water
   scene.addObject(
     generateGridObject("water", rgba(1, 86, 239), 100, 100),
