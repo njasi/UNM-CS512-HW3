@@ -10,7 +10,8 @@ uniform mat4 uModelTransformationMatrix;
 
 // object translation coords, not an actual
 // translation matrix
-uniform vec2 uPositionTranslation; 
+uniform vec3 uPositionTranslation; 
+uniform vec3 uRotationTransformation;
 
 out vec3 vColor;
 
@@ -94,9 +95,9 @@ mat3 shear2D(float xs, float ys){
 // wonder if theres a simpler way...
 mat4 shear3d(float xy, float xz, float yx, float yz, float zx, float zy){
     return mat4(
-        1.0, yx, zx, 0.0,
-        xy, 1.0, zy, 0.0,
-        xz, yz, 1.0, 0.0,
+        1.0, yx , zx , 0.0,
+        xy , 1.0, zy , 0.0,
+        xz , yz , 1.0, 0.0,
         0.0, 0.0, 0.0, 1.0
     );
 }
@@ -112,6 +113,26 @@ mat3 mirror2D(float angle){
   );
 }
 
+// Mirror along a vector that passes through the origin
+// 
+// couldnt find mirroring in the slides; shear was simple enough
+// to derive but mirroring is more complicated.
+// https://en.wikipedia.org/wiki/Transformation_matrix#Reflection
+mat4 mirror3D(float lx, float ly, float lz){
+  float lx2 = lx*lx;
+  float ly2 = ly*ly;
+  float lz2 = lz*lz;
+
+  return mat4(
+    ly2 + lz2 - lx2, 2.0 * lx * ly  ,  2.0 * lx * lz ,  0,
+    2.0 * ly * lx  , lx2 + lz2 - ly2,  2.0 * ly * lz ,  0,
+    2.0 * lz * lx  , 2.0 * lz * ly  , lx2 + ly2 - lz2,  0,
+    0              , 0              , 0              ,  1
+
+  );
+}
+
+
 // create a 2d translation matrix
 mat3 translate2D(float tx, float ty){
   return mat3(
@@ -121,12 +142,13 @@ mat3 translate2D(float tx, float ty){
   );
 }
 
+// create a 3d transformation matrix
 mat4 translate3D(float tx, float ty, float tz){
     return mat4(
         1.0, 0.0, 0.0, 0.0,
         0.0, 1.0, 0.0, 0.0, 
         0.0, 0.0, 1.0, 0.0,
-        tx, ty, tz, 1.0
+        tx , ty , tz , 1.0
     );
 }
 
