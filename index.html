@@ -35,11 +35,12 @@
               <label class="slider-control">
                 <span>
                   <strong>Elevation</strong>
-                  <output id="elevation-value">45°</output>
+                  <output><span id="elevationValue">45</span>°</output>
                 </span>
 
                 <input
                   id="elevation"
+                  name="elevation"
                   type="range"
                   min="0"
                   max="90"
@@ -50,12 +51,13 @@
 
               <label class="slider-control">
                 <span>
-                  <strong>Left / Right</strong>
-                  <output id="direction-value">0°</output>
+                  <strong>Yaw</strong>
+                  <output><span id="yawValue">0</span>°</output>
                 </span>
 
                 <input
-                  id="direction"
+                  id="yaw"
+                  name="yaw"
                   type="range"
                   min="-180"
                   max="180"
@@ -67,11 +69,12 @@
               <label class="slider-control power-control">
                 <span>
                   <strong>Power</strong>
-                  <output id="power-value">50%</output>
+                  <output><span id="powerValue">50</span>%</output>
                 </span>
 
                 <input
                   id="power"
+                  name="power"
                   type="range"
                   min="0"
                   max="100"

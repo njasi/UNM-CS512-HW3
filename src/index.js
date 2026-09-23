@@ -38,6 +38,16 @@ scene.addShader(
   ),
 );
 
+let cannonConfig = {
+  pitch: 0,
+  yaw: 0,
+  power: 0,
+};
+
+function updateCannon(){
+  // TODO get cannon from scene and update it when we update config
+}
+
 function fireCannon() {
   // check strength, x,y sliders
 
@@ -68,7 +78,7 @@ function fireCannon() {
     0.5,
     true,
     () => {
-      console.log("collided")
+      console.log("collided");
     },
   );
 
@@ -180,6 +190,20 @@ function setupInputControls() {
   document.getElementById("fire-button").addEventListener("mousedown", () => {
     fireCannon();
   });
+
+  function handleCannonConfig(event) {
+    const name = event.target.name;
+    cannonConfig[name] = parseFloat(event.target.value);
+    document.getElementById(name + "Value").innerText = cannonConfig[name];
+  }
+
+  document.getElementById("yaw").addEventListener("input", handleCannonConfig);
+  document
+    .getElementById("elevation")
+    .addEventListener("input", handleCannonConfig);
+  document
+    .getElementById("power")
+    .addEventListener("input", handleCannonConfig);
 }
 
 /**
@@ -197,7 +221,7 @@ async function main() {
 
   scene.addProgram("basic", "basicVertex", "basicFragment");
 
-  initSceneObjects()
+  initSceneObjects();
 
   // this is kinda annoying, maybe i move them to a map
   const vertexShader = scene.shaders.find(
