@@ -63,7 +63,7 @@ function fireCannon() {
   const pitR = (cannonConfig.elevation / 180) * Math.PI;
 
   const cannonLook = [
-    -Math.sin(yawR),
+    -Math.sin(yawR) * Math.cos(pitR),
     Math.sin(pitR),
     -Math.cos(pitR) * Math.cos(yawR),
     0,
