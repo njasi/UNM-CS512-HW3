@@ -1,17 +1,22 @@
-import { perspective, mat4Translate, matMul, box2Cube, frustum2Box, mat4Identity} from "./transformations";
+import {
+  perspective,
+  mat4Translate,
+  matMul,
+  box2Cube,
+  frustum2Box,
+  mat4Identity,
+} from "./transformations";
 
 export default class Camera {
   constructor(
     aspect,
-    {
-      x = 0,
-      y = 0,
-      z = -6,
-      fov = Math.PI / 4,
-      zNear = 0.1,
-      zFar = 100,
-      orthoSize = 2.5,
-    } = {},
+    x = 0,
+    y = 0,
+    z = -6,
+    fov = Math.PI / 4,
+    zNear = 0.1,
+    zFar = 100,
+    orthoSize = 2.5,
   ) {
     this.x = x;
     this.y = y;

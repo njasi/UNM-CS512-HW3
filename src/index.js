@@ -20,6 +20,7 @@ const fragEditor = document.getElementById("fragEditor");
 
 // try to plug in new scene abstraction
 const scene = new Scene("glcanvas");
+scene.camera.move(0, -2.5, -5);
 
 scene.addShader(
   new Shader(
@@ -58,15 +59,15 @@ function updateCannon() {
 /**
  * enforce a cooldown on the cannon as well as start an animation
  * from firing
- * @param {*} lookVector 
+ * @param {*} lookVector
  * @returns bool true if button was disabled, false if it was active
  */
 function cannonCooldown(lookVector) {
   const button = document.getElementById("fire-button");
   const cannon = scene.getObject("cannon");
 
-  if(button.disabled){
-    return true
+  if (button.disabled) {
+    return true;
   }
 
   button.disabled = true;
@@ -75,19 +76,19 @@ function cannonCooldown(lookVector) {
   // TODO: should really set the update function on the cannon object
   const cooldownInter = setInterval(() => {
     const dt = scene.time - startTime;
-    const shift = Math.sin(dt/200 * Math.PI)
+    const shift = Math.sin((dt / 200) * Math.PI);
 
     // scale and give cannon kickback
-    if(dt <= 200){
+    if (dt <= 200) {
       cannon.scale[0] = 1 + 0.1 * shift;
       cannon.scale[1] = 1 + 0.1 * shift;
       cannon.scale[2] = 1 + 0.1 * shift;
       cannon.position[0] = 0.5 * shift * -lookVector[0];
       cannon.position[2] = 0.5 * shift * -lookVector[2];
-    }else{
+    } else {
       cannon.scale = [1, 1, 1];
-      cannon.position[0] = 0; 
-      cannon.position[2] = 0; 
+      cannon.position[0] = 0;
+      cannon.position[2] = 0;
     }
 
     if (dt > 500) {
@@ -96,7 +97,7 @@ function cannonCooldown(lookVector) {
     }
   }, 30);
 
-  return false
+  return false;
 }
 
 /**
@@ -116,8 +117,8 @@ function fireCannon() {
     0,
   ];
 
-  if(cannonCooldown(cannonLook)){
-    return 
+  if (cannonCooldown(cannonLook)) {
+    return;
   }
 
   const bombPrim = generateBomb(0.5);
@@ -273,7 +274,7 @@ function setupInputControls() {
 
   /**
    * Handle an event to any of the cannon sliders and update the config dict
-   * @param {*} event 
+   * @param {*} event
    */
   function handleCannonConfig(event) {
     const name = event.target.name;
