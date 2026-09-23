@@ -77,7 +77,7 @@ mat4 rotate3DZ(float angle){
 mat4 rotate3D(float ax, float ay, float az){
     // TODO could probaby make more efficient by writing out the whole matrix
     //      but tbh thats what the X,Y,Z specific rotations are for anyway
-    return rotate3DX(ax) * rotate3DY(ay) * rotate3DZ(az);
+    return rotate3DZ(az) * rotate3DY(ay) * rotate3DX(ax);
 }
 
 // create a 2d shear matrix
