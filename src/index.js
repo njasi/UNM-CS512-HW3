@@ -45,6 +45,9 @@ let cannonConfig = {
   power: 50,
 };
 
+/**
+ * Update cannon rotation based on the cannon config dict
+ */
 function updateCannon() {
   // TODO get cannon from scene and update it when we update config
   const cannon = scene.getObject("cannon");
@@ -52,6 +55,12 @@ function updateCannon() {
   cannon.rotation[1] = (cannonConfig.yaw / 180) * Math.PI;
 }
 
+/**
+ * enforce a cooldown on the cannon as well as start an animation
+ * from firing
+ * @param {*} lookVector 
+ * @returns bool true if button was disabled, false if it was active
+ */
 function cannonCooldown(lookVector) {
   const button = document.getElementById("fire-button");
   const cannon = scene.getObject("cannon");
@@ -68,11 +77,10 @@ function cannonCooldown(lookVector) {
     const dt = scene.time - startTime;
     const shift = Math.sin(dt/200 * Math.PI)
 
-    
+    // scale and give cannon kickback
     cannon.scale[0] = 1 + 0.1 * shift;
     cannon.scale[1] = 1 + 0.1 * shift;
     cannon.scale[2] = 1 + 0.1 * shift;
-
     cannon.position[0] = 0.5 * shift * -lookVector[0];
     cannon.position[2] = 0.5 * shift * -lookVector[2];
 
@@ -96,6 +104,8 @@ function fireCannon() {
   const yawR = (cannonConfig.yaw / 180) * Math.PI;
   const pitR = (cannonConfig.elevation / 180) * Math.PI;
 
+  // This took forever to figure out...
+  // hopefully the addition of Z doesnt make it too bad later
   const cannonLook = [
     -Math.sin(yawR) * Math.cos(pitR),
     Math.sin(pitR),
@@ -109,10 +119,11 @@ function fireCannon() {
 
   const bombPrim = generateBomb(0.5);
 
-
   const position = scaleVec4(cannonLook, 3);
   position[1] += 1.25;
 
+  // random rotation and velocuty
+  // NOTE: z rotation looks a lil wonky maybe
   const rotation = [
     Math.random() * 2 * Math.PI,
     Math.random() * 2 * Math.PI,
@@ -126,8 +137,8 @@ function fireCannon() {
     0,
   ];
 
-  // calculate unit vector from the cannon angle
-  // and then scale based on the power slider
+  // use unit vector from the cannon angle
+  // and then scale it based on the power slider
   const velocity = scaleVec4(cannonLook, cannonConfig.power / 4);
 
   const bomb = new PhysicsObject(
@@ -181,11 +192,10 @@ function initSceneObjects() {
   scene.addObject(cannon, "basic");
 }
 
-// rgba(1, 113, 187)
-// scene.addObject(
-//   generateGridObject("sea", [1 / 255, 113 / 255, 187 / 255], 100, 100),
-// );
-
+/**
+ * INitalize mouse interactions with the canvas
+ * - basically drag calculations let us rotate the scene
+ */
 function setupMouseControls() {
   // Mouse and keyboard interactions
   let mouseDown = false,
@@ -212,6 +222,11 @@ function setupMouseControls() {
   });
 }
 
+/**
+ * Initalize keyboard controls
+ * - w & s to move z
+ * - arrows to move x & y
+ */
 function setupKeyboardControls() {
   document.addEventListener("keydown", (e) => {
     const step = 0.2;
@@ -253,6 +268,10 @@ function setupInputControls() {
     fireCannon();
   });
 
+  /**
+   * Handle an event to any of the cannon sliders and update the config dict
+   * @param {*} event 
+   */
   function handleCannonConfig(event) {
     const name = event.target.name;
     cannonConfig[name] = parseFloat(event.target.value);
@@ -271,12 +290,14 @@ function setupInputControls() {
 
 /**
  * Main init function
- * - initBuffers
- * - loadShaders from files
- * - attach key events to editors
- * - attach animation loop \
+ * - load the scene shaders
+ * - init all objects
+ * - initialize buffers
+ * - attach keyboard, mouse, input listeners
+ * - start animation loop
  */
 async function main() {
+  // TODO use obj in the demo?
   // await cacheOBJ("./dist/utah_teapot.obj", "teapot");
   // scene.addObject(generateOBJObject("teapot1", undefined, "teapot"));
 
