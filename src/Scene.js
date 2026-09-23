@@ -1,5 +1,6 @@
 import Camera from "./Camera";
 import { rgba } from "./objects";
+import SceneObject from "./objects/SceneObject";
 import Shader from "./Shader";
 import ShaderProgram from "./ShaderProgram";
 import { multiplyMat4, mat4Identity } from "./transformations";
@@ -156,6 +157,8 @@ export default class Scene {
    * - need an additional call to SceneObject.loadBuffers
    *   when adding, not sure if that is something 
    *   that should live in here though. Added for now
+   * @param {SceneObject} obj the object to add
+   * @param {string} programLabel the label for the shader program to use with this object
    */
   addObject(obj, programLabel = obj.programLabel) {
     if (!programLabel) {
@@ -172,6 +175,16 @@ export default class Scene {
     if(!!obj.setUniforms){
       obj.setUniforms(this)
     }
+  }
+
+  /**
+   * Get an object by its lable
+   * 
+   * TODO: should really update the objects colleciton to a map instead of a list
+   * @param {string} label 
+   */
+  getObject(label){
+    return this.objects.find(obj => obj.label == label)
   }
 
   /**

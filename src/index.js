@@ -39,13 +39,16 @@ scene.addShader(
 );
 
 let cannonConfig = {
-  pitch: 0,
+  elevation: 45,
   yaw: 0,
   power: 0,
 };
 
 function updateCannon(){
   // TODO get cannon from scene and update it when we update config
+  const cannon = scene.getObject("cannon");
+  cannon.rotation[0] = cannonConfig.elevation / 180 * Math.PI;
+  cannon.rotation[1] = cannonConfig.yaw / 180 * Math.PI
 }
 
 function fireCannon() {
@@ -112,11 +115,8 @@ function initSceneObjects() {
   // watercolor =>  rgba(1, 86, 239)
   const cannon = generateCannonObject("cannon", undefined);
   cannon.position[1] = 1.25;
+  cannon.rotation[0] = Math.PI/4;
   scene.addObject(cannon, "basic");
-  // const bomb = generateBombObject("bomb", undefined, 1);
-  // scene.addObject(bomb, "basic");
-
-  console.log(scene.objects);
 }
 
 // rgba(1, 113, 187)
@@ -195,6 +195,7 @@ function setupInputControls() {
     const name = event.target.name;
     cannonConfig[name] = parseFloat(event.target.value);
     document.getElementById(name + "Value").innerText = cannonConfig[name];
+    updateCannon()
   }
 
   document.getElementById("yaw").addEventListener("input", handleCannonConfig);
