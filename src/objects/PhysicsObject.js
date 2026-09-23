@@ -93,19 +93,6 @@ export class PhysicsObject extends SceneObject {
    * @param {*} gl the webgl2 context from canvas
    */
   draw(gl) {
-    gl.uniform3f(
-      this.uPosLoc,
-      this.position[0],
-      this.position[1],
-      this.position[2],
-    );
-    gl.uniform3f(
-      this.uRotLoc,
-      this.rotation[0],
-      this.rotation[1],
-      this.rotation[2],
-    );
-
     super.draw(gl);
   }
 }

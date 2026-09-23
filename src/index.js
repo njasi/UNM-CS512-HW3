@@ -52,7 +52,7 @@ function fireCannon() {
 
   // TODO calculate unit vector from the cannon angle
   //      and then scale based on the power slider
-  const velocity = [0, 5, -20, 0];
+  const velocity = [0, 5, -25, 0];
 
   const bomb = new PhysicsObject(
     "bomb" + Date.now(),
@@ -77,21 +77,21 @@ function fireCannon() {
   console.log("fired", bomb);
 }
 
-function addBarrel() {
+function initSceneObjects() {
   // generate a primitive
-  const barrel = generateBarrelObject(
-    "barrel",
-    undefined,
-    20,
-    1,
-    2.5,
-    0,
-    0,
-    0,
-    0.2,
-  );
+  // const barrel = generateBarrelObject(
+  //   "barrel",
+  //   undefined,
+  //   20,
+  //   1,
+  //   2.5,
+  //   0,
+  //   0,
+  //   0,
+  //   0.2,
+  // );
 
-  scene.addObject(barrel, "basic");
+  // scene.addObject(barrel, "basic");
 
   // add water
   scene.addObject(
@@ -100,8 +100,9 @@ function addBarrel() {
   );
 
   // watercolor =>  rgba(1, 86, 239)
-  // const cannon = generateCannonObject("cannon", undefined);
-  // scene.addObject(cannon, "basic");
+  const cannon = generateCannonObject("cannon", undefined);
+  cannon.position[1] = 1.25;
+  scene.addObject(cannon, "basic");
   // const bomb = generateBombObject("bomb", undefined, 1);
   // scene.addObject(bomb, "basic");
 
@@ -196,7 +197,7 @@ async function main() {
 
   scene.addProgram("basic", "basicVertex", "basicFragment");
 
-  // addBarrel();
+  initSceneObjects()
 
   // this is kinda annoying, maybe i move them to a map
   const vertexShader = scene.shaders.find(

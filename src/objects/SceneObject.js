@@ -34,6 +34,9 @@ export default class SceneObject {
     this.nbo = undefined;
     this.ibo = undefined;
 
+    this.position = [0, 0, 0];
+    this.rotation = [0, 0, 0];
+
     // attached in scene
     this.programLabel;
   }
@@ -103,6 +106,18 @@ export default class SceneObject {
    * @param {*} gl the webgl2 context from canvas
    */
   draw(gl) {
+    gl.uniform3f(
+      this.uPosLoc,
+      this.position[0],
+      this.position[1],
+      this.position[2],
+    );
+    gl.uniform3f(
+      this.uRotLoc,
+      this.rotation[0],
+      this.rotation[1],
+      this.rotation[2],
+    );
     // draw the object by the index order
     gl.drawElements(gl.TRIANGLES, this.indices.length, gl.UNSIGNED_SHORT, 0);
   }
