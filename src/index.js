@@ -78,16 +78,19 @@ function cannonCooldown(lookVector) {
     const shift = Math.sin(dt/200 * Math.PI)
 
     // scale and give cannon kickback
-    cannon.scale[0] = 1 + 0.1 * shift;
-    cannon.scale[1] = 1 + 0.1 * shift;
-    cannon.scale[2] = 1 + 0.1 * shift;
-    cannon.position[0] = 0.5 * shift * -lookVector[0];
-    cannon.position[2] = 0.5 * shift * -lookVector[2];
-
-    if (dt > 200) {
+    if(dt <= 200){
+      cannon.scale[0] = 1 + 0.1 * shift;
+      cannon.scale[1] = 1 + 0.1 * shift;
+      cannon.scale[2] = 1 + 0.1 * shift;
+      cannon.position[0] = 0.5 * shift * -lookVector[0];
+      cannon.position[2] = 0.5 * shift * -lookVector[2];
+    }else{
       cannon.scale = [1, 1, 1];
       cannon.position[0] = 0; 
       cannon.position[2] = 0; 
+    }
+
+    if (dt > 500) {
       clearInterval(cooldownInter);
       button.disabled = false;
     }
