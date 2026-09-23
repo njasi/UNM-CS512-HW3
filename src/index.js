@@ -12,6 +12,7 @@ import { PhysicsObject } from "./objects/PhysicsObject";
 import { generateBomb } from "./objects/compositions";
 
 import { cacheOBJ, generateOBJObject } from "./objects/objLoader";
+import { scaleVec4 } from "./vec4";
 
 const canvas = document.getElementById("glcanvas");
 const vertEditor = document.getElementById("vertEditor");
@@ -51,21 +52,46 @@ function updateCannon() {
   cannon.rotation[1] = (cannonConfig.yaw / 180) * Math.PI;
 }
 
+/**
+ * Create a bomb and launch it out of the cannon barrel
+ * according to the cannonConfig settings from the sliders
+ */
 function fireCannon() {
-  // check strength, x,y sliders
-
   const bombPrim = generateBomb(0.5);
 
+  const yawR = (cannonConfig.yaw / 180) * Math.PI;
+  const pitR = (cannonConfig.elevation / 180) * Math.PI;
+
+  const cannonLook = [
+    0,
+    Math.sin(pitR),
+    -Math.cos(pitR),
+    0,
+  ];
+
+  console.log(cannonLook);
+
   // TODO do some calculation to get the position of the end of the cannon barrel
-  const position = [0, 0, 0, 0];
+  const position = scaleVec4(cannonLook, 3);
+  position[1] += 1.25;
 
   // TODO make random
-  const rotation = [0, 0, 0, 0];
-  const rotVelocity = [0, 0, 0, 0];
+  const rotation = [
+    Math.random() * 2 * Math.PI,
+    Math.random() * 2 * Math.PI,
+    Math.random() * 2 * Math.PI,
+    0,
+  ];
+  const rotVelocity = [
+    Math.random() * 10 - 5,
+    Math.random() * 10 - 5,
+    Math.random() * 10 - 5,
+    0,
+  ];
 
   // TODO calculate unit vector from the cannon angle
   //      and then scale based on the power slider
-  const velocity = [0, 5, -25, 0];
+  const velocity = scaleVec4(cannonLook, 20);
 
   const bomb = new PhysicsObject(
     "bomb" + Date.now(),
@@ -86,8 +112,6 @@ function fireCannon() {
   );
 
   scene.addObject(bomb, "basic");
-
-  console.log("fired", bomb);
 }
 
 function initSceneObjects() {
