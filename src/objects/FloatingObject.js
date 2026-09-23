@@ -79,8 +79,7 @@ export class FloatingObject extends PhysicsObject {
 
     // if close enough to water surface 
     // & slow enough, zero out gravity and set snappedToWater=true
-    console.log(Math.abs(this.velocity[1]), Math.abs(waterY - this.position[1]))
-    if (Math.abs(this.velocity[1]) < 0.1 && Math.abs(waterY - this.position[1]) < 0.1){
+    if (Math.abs(this.velocity[1]) < 0.01 && Math.abs(waterY - this.position[1]) < 0.01){
         this.snappedToWater = true;
         this.gravity = 0;
     }
@@ -103,7 +102,6 @@ export class FloatingObject extends PhysicsObject {
     ) {
       // again another big simplification but should look meh
       const damper = Math.pow(this.waterFriction, dt * 1000/30)
-      console.log("damping by", damper)
       this.velocity[0] *= damper;
       this.velocity[1] *= damper;
       this.velocity[2] *= damper;
