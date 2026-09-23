@@ -52,7 +52,7 @@ function fireCannon() {
 
   // TODO calculate unit vector from the cannon angle
   //      and then scale based on the power slider
-  const velocity = [0, 0.1, 0.1, 0];
+  const velocity = [0, 5, -20, 0];
 
   const bomb = new PhysicsObject(
     "bomb" + Date.now(),
@@ -64,7 +64,7 @@ function fireCannon() {
     rotation,
     velocity,
     rotVelocity,
-    0,
+    9.81,
     0.5,
     true,
     undefined,

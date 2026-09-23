@@ -33,6 +33,9 @@ export default class SceneObject {
     this.vbo = undefined;
     this.nbo = undefined;
     this.ibo = undefined;
+
+    // attached in scene
+    this.programLabel;
   }
 
   /**
@@ -52,7 +55,7 @@ export default class SceneObject {
     if (!(this.indices instanceof Uint16Array)) {
       throw new Error("indices must be a Uint16Array");
     }
-    
+
     this.vbo = gl.createBuffer();
     gl.bindBuffer(gl.ARRAY_BUFFER, this.vbo);
     gl.bufferData(gl.ARRAY_BUFFER, this.vertices, gl.STATIC_DRAW);
@@ -80,6 +83,18 @@ export default class SceneObject {
     gl.enableVertexAttribArray(colorLoc);
     gl.vertexAttribPointer(colorLoc, 4, gl.FLOAT, false, 0, 0);
     gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.ibo);
+  }
+
+  /**
+   * Set object specific uniforms.
+   * In this case positon and rotation
+   *
+   * @param {Scene} scene the scene the object is in
+   */
+  setUniforms(scene) {
+    const shader = scene.getProgram(this.programLabel);
+    this.uPosLoc = scene.gl.getUniformLocation(shader.program, "uPosition");
+    this.uRotLoc = scene.gl.getUniformLocation(shader.program, "uRotation");
   }
 
   /**

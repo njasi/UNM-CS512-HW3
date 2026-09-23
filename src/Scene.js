@@ -167,6 +167,11 @@ export default class Scene {
     obj.programLabel = programLabel;
     this.objects.push(obj);
     obj.loadBuffers(this.gl)
+
+    // TODO make setuniforms standard
+    if(!!obj.setUniforms){
+      obj.setUniforms(this)
+    }
   }
 
   /**

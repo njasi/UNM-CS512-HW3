@@ -10,8 +10,8 @@ uniform mat4 uModelTransformationMatrix;
 
 // object translation coords, not an actual
 // translation matrix
-uniform vec3 uPositionTranslation; 
-uniform vec3 uRotationTransformation;
+uniform vec3 uPosition; 
+uniform vec3 uRotation;
 
 out vec3 vColor;
 
@@ -67,12 +67,11 @@ mat4 rotate3DY(float angle){
 mat4 rotate3DZ(float angle){
     return mat4(
         cos(angle), sin(angle), 0.0, 0.0,
-        -sin(angle), cos(angle), 1.0, 0.0,
+        -sin(angle), cos(angle), 0.0, 0.0,
         0.0, 0.0, 1.0, 0.0,
         0.0, 0.0, 0.0, 1.0
     );
 }
-
 
 // rotate around all axis
 mat4 rotate3D(float ax, float ay, float az){
@@ -132,7 +131,6 @@ mat4 mirror3D(float lx, float ly, float lz){
   );
 }
 
-
 // create a 2d translation matrix
 mat3 translate2D(float tx, float ty){
   return mat3(
@@ -152,7 +150,11 @@ mat4 translate3D(float tx, float ty, float tz){
     );
 }
 
+
 void main() {
-  gl_Position = uProjectionMatrix * uModelViewMatrix * uModelTransformationMatrix * vec4(aPosition, 1.0f);
+  mat4 T = translate3D(uPosition.x, uPosition.y, uPosition.z);
+  mat4 R = rotate3D(uRotation.x, uRotation.y, uRotation.z);
+
+  gl_Position = uProjectionMatrix * uModelViewMatrix * uModelTransformationMatrix * T * R * vec4(aPosition, 1.0f);
   vColor = aColor;
 }
