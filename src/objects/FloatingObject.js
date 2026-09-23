@@ -9,19 +9,19 @@ import { PhysicsObject } from "./PhysicsObject";
 export class FloatingObject extends PhysicsObject {
   /**
    * Create a floating physics object
-   * @param {*} label
-   * @param {*} vertices
-   * @param {*} colors
-   * @param {*} indices
-   * @param {*} parent
-   * @param {*} position
-   * @param {*} rotation
-   * @param {*} hitboxRadius
-   * @param {*} velocity
-   * @param {*} rotVelocity
-   * @param {*} gravity
-   * @param {*} collidable
-   * @param {*} onCollision
+   * @param {*} label 
+   * @param {*} vertices 
+   * @param {*} colors 
+   * @param {*} indices 
+   * @param {*} parent 
+   * @param {*} position 
+   * @param {*} rotation 
+   * @param {*} velocity 
+   * @param {*} rotVelocity 
+   * @param {*} gravity 
+   * @param {*} hitboxRadius 
+   * @param {*} collidable 
+   * @param {*} onCollision 
    * @param {Number} buoyancy m/s^2 acceleration we should get up if below water
    * @param {Number} waterFriction percent of x,z speed kept if in water (0-1)
    * @param {Function} waterFunction function given position & time return water y-level
@@ -34,30 +34,30 @@ export class FloatingObject extends PhysicsObject {
     parent = undefined,
     position,
     rotation,
-    hitboxRadius,
     velocity = [0, 0, 0, 0],
     rotVelocity = [0, 0, 0, 0],
     gravity = 9.81,
+    hitboxRadius = 0,
     collidable = true,
     onCollision = undefined,
-    buoyancy = 10,
+    buoyancy = 15,
     waterFriction = 0.999,
     waterFunction = undefined,
   ) {
     super(
-      label,
-      vertices,
-      colors,
-      indices,
-      parent,
-      position,
-      rotation,
-      hitboxRadius,
-      velocity,
-      rotVelocity,
-      gravity,
-      collidable,
-      onCollision,
+    label,
+    vertices,
+    colors,
+    indices,
+    parent,
+    position,
+    rotation,
+    velocity,
+    rotVelocity,
+    gravity,
+    hitboxRadius,
+    collidable,
+    onCollision,
     );
 
     // function to get the height of water given a position
@@ -79,7 +79,8 @@ export class FloatingObject extends PhysicsObject {
 
     // if close enough to water surface 
     // & slow enough, zero out gravity and set snappedToWater=true
-    if (this.velocity[1] < 1 && Math.abs(waterY - this.position[1])){
+    console.log(Math.abs(this.velocity[1]), Math.abs(waterY - this.position[1]))
+    if (Math.abs(this.velocity[1]) < 0.1 && Math.abs(waterY - this.position[1]) < 0.1){
         this.snappedToWater = true;
         this.gravity = 0;
     }
@@ -88,7 +89,7 @@ export class FloatingObject extends PhysicsObject {
       this.position[1] = waterY;
     } else {
       // assume we float up to the center position for now
-      if (this.position < waterY) {
+      if (this.position[1] < waterY) {
         this.velocity[1] += this.buoyancy * dt;
       }
     }
@@ -101,8 +102,8 @@ export class FloatingObject extends PhysicsObject {
       this.position[1] - waterY < this.hitboxRadius
     ) {
       // again another big simplification but should look meh
-      this.velocity[0] *= this.waterFriction;
-      this.velocity[2] *= this.waterFriction;
+      this.velocity[0] *= Math.pow(this.waterFriction, dt);
+      this.velocity[2] *= Math.pow(this.waterFriction, dt);
     }
   }
 }

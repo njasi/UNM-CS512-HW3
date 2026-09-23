@@ -8,8 +8,9 @@ import {
   generateGridObject,
   rgba,
 } from "./objects";
+import { FloatingObject } from "./objects/FloatingObject";
 import { PhysicsObject } from "./objects/PhysicsObject";
-import { generateBomb } from "./objects/compositions";
+import { generateBarrel, generateBomb } from "./objects/compositions";
 
 import { cacheOBJ, generateOBJObject } from "./objects/objLoader";
 import { scaleVec4 } from "./vec4";
@@ -37,6 +38,15 @@ scene.addShader(
     scene.gl.FRAGMENT_SHADER,
     "",
     "./src/shaders/fragment.frag",
+  ),
+);
+
+scene.addShader(
+  new Shader(
+    "waterVertex",
+    scene.gl.VERTEX_SHADER,
+    "",
+    "./src/shaders/water.vert",
   ),
 );
 
@@ -167,26 +177,46 @@ function fireCannon() {
   scene.addObject(bomb, "basic");
 }
 
+function addRandomBarrel() {
+  const barrelPrim = generateBarrel(20, 1, 2.5, 0, 0, 0, 0.2);
+
+  const velocity = [0, 0, 0];
+  const rotVelocity = [0, 0, 0];
+  const position = [
+    5, // Math.random() * 20 - 10,
+    5, // Math.random() * 20,
+    -5,// Math.random() * -10,
+  ];
+  const rotation = [Math.PI / 2, 0, 0];
+
+  const barrel = new FloatingObject(
+    "barrel" + Date.now(),
+    new Float32Array(barrelPrim.vertices),
+    new Float32Array(barrelPrim.colors),
+    new Uint16Array(barrelPrim.indices),
+    undefined,
+    position,
+    rotation,
+    velocity,
+    rotVelocity,
+  );
+
+  barrel.hitboxRadius = 1.5;
+  barrel.onCollision = () => {
+    scene.removeObject(barrel.label);
+    addRandomBarrel();
+  };
+  barrel.waterFunction = (pos, time) => 0.4 * Math.sin(time);
+
+  scene.addObject(barrel, "basic");
+}
+
 function initSceneObjects() {
-  // generate a primitive
-  // const barrel = generateBarrelObject(
-  //   "barrel",
-  //   undefined,
-  //   20,
-  //   1,
-  //   2.5,
-  //   0,
-  //   0,
-  //   0,
-  //   0.2,
-  // );
-
-  // scene.addObject(barrel, "basic");
-
+  addRandomBarrel();
   // add water
   scene.addObject(
     generateGridObject("water", rgba(1, 86, 239), 100, 100),
-    "basic",
+    "water",
   );
 
   // pillar for cannon to sit on
@@ -200,10 +230,9 @@ function initSceneObjects() {
     0,
     0,
   );
-  pillar.rotation[0] = Math.PI/2
-  pillar.position[1] = -.5
-  scene.addObject(pillar, "basic")
-
+  pillar.rotation[0] = Math.PI / 2;
+  pillar.position[1] = -0.5;
+  scene.addObject(pillar, "basic");
 
   // watercolor =>  rgba(1, 86, 239)
   const cannon = generateCannonObject("cannon", undefined);
@@ -324,6 +353,7 @@ async function main() {
   await scene.loadShaders();
 
   scene.addProgram("basic", "basicVertex", "basicFragment");
+  scene.addProgram("water", "waterVertex", "basicFragment");
 
   initSceneObjects();
 
