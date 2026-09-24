@@ -6,6 +6,7 @@ import {
   generateCannonObject,
   generateCylinderObject,
   generateGridObject,
+  generateSphereObject,
   rgba,
 } from "./objects";
 import { FloatingObject } from "./objects/FloatingObject";
@@ -17,6 +18,7 @@ import { scaleVec4 } from "./vec4";
 
 const canvas = document.getElementById("glcanvas");
 const vertEditor = document.getElementById("vertEditor");
+const waterEditor = document.getElementById("waterEditor");
 const fragEditor = document.getElementById("fragEditor");
 
 // try to plug in new scene abstraction
@@ -114,6 +116,9 @@ function cannonCooldown(lookVector) {
 /**
  * Create a bomb and launch it out of the cannon barrel
  * according to the cannonConfig settings from the sliders
+ *
+ * Bomb will explode upon collision and delete both objects
+ * - if its a barrel a new barrel will be spawned
  */
 function fireCannon() {
   const yawR = (cannonConfig.yaw / 180) * Math.PI;
@@ -170,13 +175,14 @@ function fireCannon() {
     0.5,
     true,
     (bomb, other) => {
-      // TODO explosion?
-      scene.removeObject(bomb.label)
-      scene.removeObject(other.label)
+      animateExplosion(bomb.position);
 
-      if(other.label.startsWith("barrel")){
+      scene.removeObject(bomb.label);
+      scene.removeObject(other.label);
+
+      if (other.label.startsWith("barrel")) {
         // todo increase score or something idk
-        addRandomBarrel()
+        addRandomBarrel();
       }
     },
   );
@@ -185,6 +191,12 @@ function fireCannon() {
 }
 
 let barrelCount = 0;
+/**
+ * Add a barrel to the scene with
+ * - random position
+ * - random velocity
+ * - random rotation
+ */
 function addRandomBarrel() {
   const barrelPrim = generateBarrel(20, 1, 2.5, 0, 0, 0, 0.2);
 
@@ -199,7 +211,11 @@ function addRandomBarrel() {
     Math.random() * -20,
     Math.random() * -20 - 15,
   ];
-  const rotation = [Math.PI / 2, 0, 0];
+  const rotation = [
+    Math.random() * 2 * Math.PI,
+    Math.random() * 2 * Math.PI,
+    Math.random() * 2 * Math.PI,
+  ];
 
   barrelCount++;
   const barrel = new FloatingObject(
@@ -214,13 +230,49 @@ function addRandomBarrel() {
     rotVelocity,
   );
 
-
   barrel.hitboxRadius = 1.5;
   barrel.waterFunction = (pos, time) => 0.4 * Math.sin(time);
 
   scene.addObject(barrel, "basic");
 }
 
+/**
+ * Animate an explosion (fast growing sphere)
+ * at the indicated position
+ *
+ * @param {*} position
+ */
+function animateExplosion(position) {
+  const explosion = generateSphereObject(
+    "explosion" + Date.now(),
+    rgba(241, 123, 12, 1),
+    32,
+    1,
+  );
+  explosion.position = position;
+
+  let scale = 0.3;
+  explosion.position = position;
+  explosion.scale = [scale, scale, scale];
+  scene.addObject(explosion, "basic");
+
+  const explodeInt = setInterval(() => {
+    scale *= 1.5;
+    explosion.scale = [scale, scale, scale];
+    if (scale > 5) {
+      scene.removeObject(explosion.label);
+      clearInterval(explodeInt);
+    }
+  }, 30);
+}
+
+/**
+ * Initalize all the objects in the starting scene
+ * - 10 random barrels
+ * - cannon
+ * - pillar canon sits on
+ * - water
+ */
 function initSceneObjects() {
   for (let i = 0; i < 10; i++) {
     addRandomBarrel();
@@ -369,14 +421,12 @@ async function main() {
 
   initSceneObjects();
 
-  // this is kinda annoying, maybe i move them to a map
-  const vertexShader = scene.shaders.find(
-    (shader) => shader.type === scene.gl.VERTEX_SHADER,
-  );
-  const fragmentShader = scene.shaders.find(
-    (shader) => shader.type === scene.gl.FRAGMENT_SHADER,
-  );
+  const vertexShader = scene.getShader("basicVertex");
+  const fragmentShader = scene.getShader("basicFragment");
+  const waterShader = scene.getShader("waterVertex");
+
   vertEditor.value = vertexShader.source;
+  waterEditor.value = waterShader.source;
   fragEditor.value = fragmentShader.source;
 
   scene.initBuffers();
